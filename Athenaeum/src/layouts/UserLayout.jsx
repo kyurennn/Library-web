@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import styles from "./userLayout.module.css";
+import styles from "./UserLayout.module.css";
 import MF from "../assets/profile/MF.jpg";
 
 const NAV_ITEMS = [
