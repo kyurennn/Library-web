@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./homepage.module.css";
 
 import LP from "../../../assets/books/LP.jpg";
@@ -174,6 +175,7 @@ function EventCard({ event }) {
 
 /* ---------- PAGE ---------- */
 export default function Homepage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
@@ -189,6 +191,15 @@ export default function Homepage() {
       return matchCategory && matchQuery && matchAuthor;
     });
   }, [query, author, category]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("q", query.trim());
+    if (author.trim()) params.set("author", author.trim());
+    if (category && category !== CATEGORIES[0]) params.set("category", category);
+    navigate(`/catalog${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   return (
     <main className={styles.page}>
@@ -216,6 +227,49 @@ export default function Homepage() {
 
       {/* SEARCH PANEL */}
       <section className={styles.searchPanel}>
+        <form onSubmit={handleSearchSubmit}>
+          <div className={styles.searchRow}>
+            <label className={`${styles.input} ${styles.inputGrow}`}>
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Cari Judul Buku, Topik, atau Kata Kunci..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </label>
+            <label className={`${styles.input} ${styles.inputAuthor}`}>
+              <UserIcon />
+              <input
+                type="text"
+                placeholder="Nama Penulis..."
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+              />
+            </label>
+            <button
+              type="submit"
+              style={{
+                height: "46px",
+                padding: "0 22px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "#00b4d8",
+                color: "#071526",
+                border: 0,
+                borderRadius: "12px",
+                fontSize: "14px",
+                fontWeight: "700",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <SearchIcon />
+              Cari Buku
+            </button>
+          </div>
+        </form>
         <div className={styles.searchRow}>
           <label className={`${styles.input} ${styles.inputGrow}`}>
             <SearchIcon />
@@ -258,6 +312,39 @@ export default function Homepage() {
       <section className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Latest Catalog</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Link
+              to="/catalog"
+              style={{
+                color: "#22d3ee",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Lihat Semua Katalog <ChevronIcon />
+            </Link>
+            <div className={styles.viewToggle}>
+              <button
+                type="button"
+                aria-label="Tampilan grid"
+                className={view === "grid" ? styles.viewActive : ""}
+                onClick={() => setView("grid")}
+              >
+                <GridIcon />
+              </button>
+              <button
+                type="button"
+                aria-label="Tampilan list"
+                className={view === "list" ? styles.viewActive : ""}
+                onClick={() => setView("list")}
+              >
+                <ListIcon />
+              </button>
+            </div>
           <div className={styles.viewToggle}>
             <button
               type="button"
@@ -283,6 +370,7 @@ export default function Homepage() {
         ) : (
           <div className={view === "grid" ? styles.bookGrid : styles.bookList}>
             {filteredBooks.map((book) => (
+              <Link key={book.id} to="/catalog" className={styles.bookCard}>
               <a key={book.id} href={`/books/${book.id}`} className={styles.bookCard}>
                 <div className={styles.coverWrap}>
                   <BookCover book={book} />
@@ -292,6 +380,7 @@ export default function Homepage() {
                   <h3 className={styles.bookTitle}>{book.title}</h3>
                   {view === "list" && <p className={styles.bookAuthor}>{book.author}</p>}
                 </div>
+              </Link>
               </a>
             ))}
           </div>

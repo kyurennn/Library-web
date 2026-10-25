@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserLayout from "./layouts/UserLayout";
 import Homepage from "./features/user/pages/homepage";
+import Catalog from "./features/user/pages/catalog";
 
 // Placeholder sementara untuk halaman yang belum dibuat
 const ComingSoon = ({ title }) => (
@@ -17,6 +18,7 @@ export default function App() {
       <Routes>
         <Route element={<UserLayout />}>
           <Route path="/" element={<Homepage />} />
+          <Route path="/catalog" element={<Catalog />} />
           <Route path="/catalog" element={<ComingSoon title="Catalog" />} />
           <Route path="/services" element={<ComingSoon title="Services & Facilities" />} />
         </Route>
