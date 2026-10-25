@@ -27,6 +27,9 @@ const CATEGORIES = [
 const BOOKS = [
   { id: 1, title: "Laskar Pelangi", author: "Andrea Hirata", category: "Fiksi & Sastra", cover: LP, from: "#7c3aed", to: "#f97316" },
   { id: 2, title: "Bumi Manusia", author: "Pramoedya Ananta Toer", category: "Fiksi & Sastra", cover: BM, from: "#a16207", to: "#166534" },
+  { id: 11, title: "Negeri 5 Menara", author: "A. Fuadi", category: "Fiksi & Sastra", cover: N5M, from: "#ea580c", to: "#7c2d12" },
+  { id: 12, title: "Cantik itu Luka", author: "Eka Kurniawan", category: "Fiksi & Sastra", cover: CL, from: "#be123c", to: "#fda4af" },
+  { id: 13, title: "Atomic Habits", author: "James Clear", category: "Self Help", cover: AH, from: "#f8fafc", to: "#e2e8f0", dark: true },
   { id: 3, title: "Negeri 5 Menara", author: "A. Fuadi", category: "Fiksi & Sastra", cover: N5M, from: "#ea580c", to: "#7c2d12" },
   { id: 4, title: "Canik itu Luka", author: "Eka Kurniawan", category: "Fiksi & Sastra", cover: CL, from: "#be123c", to: "#fda4af" },
   { id: 5, title: "Atomic Habits", author: "James Clear", category: "Self Help", cover: AH, from: "#f8fafc", to: "#e2e8f0", dark: true },
@@ -370,6 +373,7 @@ export default function Homepage() {
         ) : (
           <div className={view === "grid" ? styles.bookGrid : styles.bookList}>
             {filteredBooks.map((book) => (
+              <Link key={book.id} to={`/catalog/${book.id}`} className={styles.bookCard}>
               <Link key={book.id} to="/catalog" className={styles.bookCard}>
               <a key={book.id} href={`/books/${book.id}`} className={styles.bookCard}>
                 <div className={styles.coverWrap}>
