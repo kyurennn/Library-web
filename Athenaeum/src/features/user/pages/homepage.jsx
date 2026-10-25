@@ -30,9 +30,6 @@ const BOOKS = [
   { id: 11, title: "Negeri 5 Menara", author: "A. Fuadi", category: "Fiksi & Sastra", cover: N5M, from: "#ea580c", to: "#7c2d12" },
   { id: 12, title: "Cantik itu Luka", author: "Eka Kurniawan", category: "Fiksi & Sastra", cover: CL, from: "#be123c", to: "#fda4af" },
   { id: 13, title: "Atomic Habits", author: "James Clear", category: "Self Help", cover: AH, from: "#f8fafc", to: "#e2e8f0", dark: true },
-  { id: 3, title: "Negeri 5 Menara", author: "A. Fuadi", category: "Fiksi & Sastra", cover: N5M, from: "#ea580c", to: "#7c2d12" },
-  { id: 4, title: "Canik itu Luka", author: "Eka Kurniawan", category: "Fiksi & Sastra", cover: CL, from: "#be123c", to: "#fda4af" },
-  { id: 5, title: "Atomic Habits", author: "James Clear", category: "Self Help", cover: AH, from: "#f8fafc", to: "#e2e8f0", dark: true },
 ];
 
 const EVENTS = [
@@ -269,7 +266,7 @@ export default function Homepage() {
         </div>
       </section>
 
-            {/* LATEST CATALOG */}
+      {/* LATEST CATALOG */}
       <section className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Latest Catalog</h2>
