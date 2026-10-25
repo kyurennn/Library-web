@@ -19,6 +19,7 @@ export default function App() {
         <Route element={<UserLayout />}>
           <Route path="/" element={<Homepage />} />
           <Route path="/catalog" element={<Catalog />} />
+          <Route path="/catalog" element={<ComingSoon title="Catalog" />} />
           <Route path="/services" element={<ComingSoon title="Services & Facilities" />} />
         </Route>
       </Routes>

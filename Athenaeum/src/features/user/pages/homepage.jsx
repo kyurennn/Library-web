@@ -270,6 +270,26 @@ export default function Homepage() {
             </button>
           </div>
         </form>
+        <div className={styles.searchRow}>
+          <label className={`${styles.input} ${styles.inputGrow}`}>
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="Cari Judul Buku, Topik, atau Kata Kunci..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </label>
+          <label className={`${styles.input} ${styles.inputAuthor}`}>
+            <UserIcon />
+            <input
+              type="text"
+              placeholder="Nama Penulis..."
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
+          </label>
+        </div>
 
         <div className={styles.categoryRow}>
           <span className={styles.categoryLabel}>KATEGORI:</span>
@@ -325,6 +345,23 @@ export default function Homepage() {
                 <ListIcon />
               </button>
             </div>
+          <div className={styles.viewToggle}>
+            <button
+              type="button"
+              aria-label="Tampilan grid"
+              className={view === "grid" ? styles.viewActive : ""}
+              onClick={() => setView("grid")}
+            >
+              <GridIcon />
+            </button>
+            <button
+              type="button"
+              aria-label="Tampilan list"
+              className={view === "list" ? styles.viewActive : ""}
+              onClick={() => setView("list")}
+            >
+              <ListIcon />
+            </button>
           </div>
         </div>
 
@@ -334,6 +371,7 @@ export default function Homepage() {
           <div className={view === "grid" ? styles.bookGrid : styles.bookList}>
             {filteredBooks.map((book) => (
               <Link key={book.id} to="/catalog" className={styles.bookCard}>
+              <a key={book.id} href={`/books/${book.id}`} className={styles.bookCard}>
                 <div className={styles.coverWrap}>
                   <BookCover book={book} />
                 </div>
@@ -343,6 +381,7 @@ export default function Homepage() {
                   {view === "list" && <p className={styles.bookAuthor}>{book.author}</p>}
                 </div>
               </Link>
+              </a>
             ))}
           </div>
         )}
