@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./homepage.module.css";
 
 import LP from "../../../assets/books/LP.jpg";
@@ -26,9 +27,9 @@ const CATEGORIES = [
 const BOOKS = [
   { id: 1, title: "Laskar Pelangi", author: "Andrea Hirata", category: "Fiksi & Sastra", cover: LP, from: "#7c3aed", to: "#f97316" },
   { id: 2, title: "Bumi Manusia", author: "Pramoedya Ananta Toer", category: "Fiksi & Sastra", cover: BM, from: "#a16207", to: "#166534" },
-  { id: 3, title: "Negeri 5 Menara", author: "A. Fuadi", category: "Fiksi & Sastra", cover: N5M, from: "#ea580c", to: "#7c2d12" },
-  { id: 4, title: "Canik itu Luka", author: "Eka Kurniawan", category: "Fiksi & Sastra", cover: CL, from: "#be123c", to: "#fda4af" },
-  { id: 5, title: "Atomic Habits", author: "James Clear", category: "Self Help", cover: AH, from: "#f8fafc", to: "#e2e8f0", dark: true },
+  { id: 11, title: "Negeri 5 Menara", author: "A. Fuadi", category: "Fiksi & Sastra", cover: N5M, from: "#ea580c", to: "#7c2d12" },
+  { id: 12, title: "Cantik itu Luka", author: "Eka Kurniawan", category: "Fiksi & Sastra", cover: CL, from: "#be123c", to: "#fda4af" },
+  { id: 13, title: "Atomic Habits", author: "James Clear", category: "Self Help", cover: AH, from: "#f8fafc", to: "#e2e8f0", dark: true },
 ];
 
 const EVENTS = [
@@ -174,6 +175,7 @@ function EventCard({ event }) {
 
 /* ---------- PAGE ---------- */
 export default function Homepage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
@@ -189,6 +191,15 @@ export default function Homepage() {
       return matchCategory && matchQuery && matchAuthor;
     });
   }, [query, author, category]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("q", query.trim());
+    if (author.trim()) params.set("author", author.trim());
+    if (category && category !== CATEGORIES[0]) params.set("category", category);
+    navigate(`/catalog${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   return (
     <main className={styles.page}>
@@ -216,6 +227,8 @@ export default function Homepage() {
 
       {/* SEARCH PANEL */}
       <section className={styles.searchPanel}>
+        <form onSubmit={handleSearchSubmit}>
+        </form>
         <div className={styles.searchRow}>
           <label className={`${styles.input} ${styles.inputGrow}`}>
             <SearchIcon />
@@ -236,7 +249,6 @@ export default function Homepage() {
             />
           </label>
         </div>
-
         <div className={styles.categoryRow}>
           <span className={styles.categoryLabel}>KATEGORI:</span>
           <div className={styles.chips}>
@@ -258,23 +270,39 @@ export default function Homepage() {
       <section className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Latest Catalog</h2>
-          <div className={styles.viewToggle}>
-            <button
-              type="button"
-              aria-label="Tampilan grid"
-              className={view === "grid" ? styles.viewActive : ""}
-              onClick={() => setView("grid")}
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Link
+              to="/catalog"
+              style={{
+                color: "#22d3ee",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
             >
-              <GridIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="Tampilan list"
-              className={view === "list" ? styles.viewActive : ""}
-              onClick={() => setView("list")}
-            >
-              <ListIcon />
-            </button>
+              Lihat Semua Katalog <ChevronIcon />
+            </Link>
+            <div className={styles.viewToggle}>
+              <button
+                type="button"
+                aria-label="Tampilan grid"
+                className={view === "grid" ? styles.viewActive : ""}
+                onClick={() => setView("grid")}
+              >
+                <GridIcon />
+              </button>
+              <button
+                type="button"
+                aria-label="Tampilan list"
+                className={view === "list" ? styles.viewActive : ""}
+                onClick={() => setView("list")}
+              >
+                <ListIcon />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -283,7 +311,7 @@ export default function Homepage() {
         ) : (
           <div className={view === "grid" ? styles.bookGrid : styles.bookList}>
             {filteredBooks.map((book) => (
-              <a key={book.id} href={`/books/${book.id}`} className={styles.bookCard}>
+              <Link key={book.id} to={`/catalog/${book.id}`} className={styles.bookCard}>
                 <div className={styles.coverWrap}>
                   <BookCover book={book} />
                 </div>
@@ -292,7 +320,7 @@ export default function Homepage() {
                   <h3 className={styles.bookTitle}>{book.title}</h3>
                   {view === "list" && <p className={styles.bookAuthor}>{book.author}</p>}
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         )}

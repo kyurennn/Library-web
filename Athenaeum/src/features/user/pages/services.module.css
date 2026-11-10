@@ -1,0 +1,520 @@
+/* services.module.css — Styling halaman Reservasi Ruangan (Services & Facilities) */
+
+.container {
+  --bg: #0a1020;
+  --panel: #0d1527;
+  --card-border: #17243c;
+  --text: #f1f5f9;
+  --muted: #8e9eb5;
+  --accent: #22d3ee;
+  --btn-blue: #0099e5;
+  --btn-blue-hover: #0284c7;
+
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 36px clamp(16px, 3vw, 40px) 72px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.container *,
+.container *::before,
+.container *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   HEADER & STATS
+   ========================================================= */
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.headerText {
+  max-width: 580px;
+}
+
+.title {
+  margin: 0 0 10px 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  line-height: 1.15;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.statsCard {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  background: var(--panel);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 12px 26px;
+  flex-shrink: 0;
+}
+
+.statCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7c96;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.statDivider {
+  width: 1px;
+  height: 38px;
+  background: var(--card-border);
+}
+
+/* =========================================================
+   FILTER / SUB-BAR
+   ========================================================= */
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filterText {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.moreBtn {
+  background: #0d1527;
+  border: 1px solid var(--card-border);
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moreBtn:hover {
+  background: #111e38;
+  border-color: #243759;
+  color: #ffffff;
+}
+
+/* =========================================================
+   ROOM CARDS GRID
+   ========================================================= */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+  margin-bottom: 36px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: #243759;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Visual Banner */
+.banner {
+  position: relative;
+  height: 185px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.bannerPribadi {
+  background: radial-gradient(circle at 85% 25%, rgba(168, 85, 247, 0.38) 0%, transparent 60%),
+              linear-gradient(135deg, #370c63 0%, #521d96 45%, #230847 100%);
+}
+
+.bannerMeeting {
+  background: radial-gradient(circle at 85% 25%, rgba(45, 212, 191, 0.3) 0%, transparent 60%),
+              linear-gradient(135deg, #03363d 0%, #0e7490 50%, #062e39 100%);
+}
+
+.bannerDecoSvg {
+  position: absolute;
+  right: -35px;
+  top: -45px;
+  width: 230px;
+  height: 230px;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.bannerContent {
+  position: relative;
+  z-index: 2;
+}
+
+.bannerTitle {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.bannerSub {
+  margin: 5px 0 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+/* Card Body */
+.cardBody {
+  padding: 22px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.categoryTag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin: 0 0 6px 0;
+}
+
+.roomTitle {
+  margin: 0 0 14px 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.metaIcon {
+  color: #7b8d9f;
+  flex-shrink: 0;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.chip {
+  background: #0f182b;
+  border: 1px solid #192642;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 13px;
+  border-radius: 999px;
+}
+
+/* Session Slot Selector */
+.sessionSection {
+  margin-top: auto;
+  margin-bottom: 18px;
+}
+
+.sessionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7c96;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.slotBtn {
+  background: #090e1a;
+  border: 1px solid var(--card-border);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-family: inherit;
+}
+
+.slotBtn:hover:not(:disabled) {
+  border-color: #273b5e;
+  color: #ffffff;
+  background: #101c34;
+}
+
+.slotBtnSelected {
+  border-color: var(--accent) !important;
+  background: rgba(34, 211, 238, 0.12) !important;
+  color: var(--accent) !important;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+.slotBtnBooked {
+  background: #070c16;
+  border-color: #121b2d;
+  color: #414f66;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Submit Reservation button */
+.submitBtn {
+  width: 100%;
+  background: var(--btn-blue);
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submitBtn:hover {
+  background: var(--btn-blue-hover);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+}
+
+.submitBtn:active {
+  transform: scale(0.99);
+}
+
+/* =========================================================
+   BOTTOM SECTION (RESERVASI SAYA & KETENTUAN)
+   ========================================================= */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 26px;
+}
+
+.infoCard {
+  background: var(--panel);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px 26px;
+}
+
+.infoCardTitle {
+  margin: 0 0 16px 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+/* Reservasi Saya list */
+.reservationList {
+  display: flex;
+  flex-direction: column;
+}
+
+.reservationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid #141f33;
+  gap: 16px;
+}
+
+.reservationItem:first-child {
+  padding-top: 4px;
+}
+
+.reservationItem:last-child {
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.resLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resRoomName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.resSchedule {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgePending {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badgeApproved {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badgeRejected {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Ketentuan Reservasi list */
+.rulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ruleItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ruleHeading {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ruleDesc {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+@media (max-width: 1024px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .headerSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .statsCard {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .slotGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reservationItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}

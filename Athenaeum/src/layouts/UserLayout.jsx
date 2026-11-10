@@ -62,18 +62,18 @@ export default function UserLayout() {
               <BookmarkIcon />
             </button>
 
-            <div className={styles.profile}>
-              {USER.avatar ? (
-                <img className={styles.avatar} src={USER.avatar} alt={USER.name} />
-              ) : (
-                <span className={styles.avatar}>{initials}</span>
-              )}
-              <div className={styles.profileText}>
-                <span className={styles.profileName}>{USER.name}</span>
-                <span className={styles.profileRole}>{USER.role}</span>
-                <span className={styles.profileRole}>{USER.badge}</span>
-              </div>
-            </div>
+            <NavLink to="/profile" className={styles.profile} onClick={() => setOpen(false)}>
+  {USER.avatar ? (
+    <img className={styles.avatar} src={USER.avatar} alt={USER.name} />
+  ) : (
+    <span className={styles.avatar}>{initials}</span>
+  )}
+  <div className={styles.profileText}>
+    <span className={styles.profileName}>{USER.name}</span>
+    <span className={styles.profileRole}>{USER.role}</span>
+    <span className={styles.profileRole}>{USER.badge}</span>
+  </div>
+</NavLink>
 
             <button
               type="button"
