@@ -1,0 +1,20 @@
+{
+  "timeSlots": ["08:00–10:00", "10:00–12:00", "13:00–15:00", "15:00–17:00"],
+  "rooms": [
+    { "id": "meeting-a", "name": "Meeting Room A", "type": "meeting", "capacity": "Kapasitas 5–10 orang" },
+    { "id": "meeting-b", "name": "Meeting Room B", "type": "meeting", "capacity": "Kapasitas 10–20 orang" },
+    { "id": "private-1", "name": "Private Room 1", "type": "private", "capacity": "Kapasitas 1 orang" },
+    { "id": "private-2", "name": "Private Room 2", "type": "private", "capacity": "Kapasitas 1 orang" },
+    { "id": "private-3", "name": "Private Room 3", "type": "private", "capacity": "Kapasitas 1 orang" }
+  ],
+  "reservations": [
+    { "id": 1, "name": "Nadia Putri",            "roomId": "meeting-a", "dayOffset": 0, "slot": "10:00–12:00", "people": 6,  "purpose": "Diskusi tugas besar kelompok",        "status": "pending" },
+    { "id": 2, "name": "Salsabila Rahma",        "roomId": "private-2", "dayOffset": 0, "slot": "13:00–15:00", "people": 1,  "purpose": "Belajar mandiri persiapan ujian",     "status": "pending" },
+    { "id": 3, "name": "Dimas Aditya",           "roomId": "meeting-a", "dayOffset": 1, "slot": "10:00–12:00", "people": 8,  "purpose": "Rapat panitia acara kampus",          "status": "pending" },
+    { "id": 4, "name": "Intan Permata",          "roomId": "private-3", "dayOffset": 1, "slot": "15:00–17:00", "people": 1,  "purpose": "Menulis skripsi",                     "status": "pending" },
+    { "id": 5, "name": "Komunitas Baca Bandung", "roomId": "meeting-b", "dayOffset": 0, "slot": "13:00–15:00", "people": 14, "purpose": "Bedah buku bulanan",                  "status": "approved" },
+    { "id": 6, "name": "Rizky Pratama",          "roomId": "private-1", "dayOffset": 0, "slot": "08:00–10:00", "people": 1,  "purpose": "Belajar mandiri",                     "status": "approved" },
+    { "id": 7, "name": "Maya Anggraini",         "roomId": "meeting-b", "dayOffset": 1, "slot": "08:00–10:00", "people": 12, "purpose": "Workshop literasi digital",           "status": "approved" },
+    { "id": 8, "name": "Bagas Wicaksono",        "roomId": "meeting-b", "dayOffset": 0, "slot": "13:00–15:00", "people": 7,  "purpose": "Latihan presentasi",                  "status": "rejected", "reason": "Bentrok dengan jadwal Komunitas Baca Bandung" }
+  ]
+}

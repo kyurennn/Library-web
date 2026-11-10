@@ -166,14 +166,16 @@
   overflow: hidden;
 }
 
-.bannerPribadi {
-  background: radial-gradient(circle at 85% 25%, rgba(168, 85, 247, 0.38) 0%, transparent 60%),
-              linear-gradient(135deg, #370c63 0%, #521d96 45%, #230847 100%);
-}
-
-.bannerMeeting {
-  background: radial-gradient(circle at 85% 25%, rgba(45, 212, 191, 0.3) 0%, transparent 60%),
-              linear-gradient(135deg, #03363d 0%, #0e7490 50%, #062e39 100%);
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(5, 10, 24, 0.75) 0%,
+    rgba(5, 10, 24, 0.35) 55%,
+    rgba(5, 10, 24, 0.15) 100%
+  );
+  z-index: 1;
 }
 
 .bannerDecoSvg {
@@ -188,7 +190,7 @@
 
 .bannerContent {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .bannerTitle {

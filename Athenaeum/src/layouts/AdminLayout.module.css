@@ -1,0 +1,236 @@
+/* AdminLayout.module.css — shell dashboard admin dengan sidebar */
+
+.shell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: #070c18;
+  color: #f1f5f9;
+  text-align: left;
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  flex: 0 0 250px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px 18px;
+  background: #080f1e;
+  border-right: 1px solid #131d31;
+  scrollbar-width: thin;
+  scrollbar-color: #1c2a44 transparent;
+  box-sizing: border-box;
+}
+
+/* Profile Card */
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #0d172b;
+  border: 1px solid #16243d;
+  border-radius: 12px;
+  margin-bottom: 28px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1e293b;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.profileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.profileRole {
+  color: #38bdf8;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.navLabel {
+  margin: 0 4px 10px;
+  color: #64748b;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+}
+
+/* Navigation List */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  color: #94a3b8;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.navLinkActive,
+.navLinkActive:hover {
+  color: #38bdf8;
+  background: rgba(0, 153, 229, 0.12);
+  border-left: 3px solid #0099e5;
+  font-weight: 600;
+}
+
+.navLinkActive svg {
+  color: #38bdf8;
+}
+
+/* Footer (Logout) */
+.sidebarFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid #131d31;
+}
+
+.footLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1px solid #1c2a44;
+  border-radius: 10px;
+  color: #fb7185;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.footLink:hover {
+  color: #f43f5e;
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+/* ---------- KONTEN UTAMA ---------- */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px clamp(18px, 2.5vw, 36px);
+  box-sizing: border-box;
+}
+
+/* ---------- MOBILE ---------- */
+.mobileBar,
+.overlay {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    display: block;
+  }
+
+  .mobileBar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    background: rgba(8, 15, 30, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #131d31;
+  }
+
+  .mobileBrand {
+    color: #38bdf8;
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 0 9px;
+    background: transparent;
+    border: 1px solid #1c2a44;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .burger span {
+    display: block;
+    height: 2px;
+    background: #cbd5e1;
+    border-radius: 2px;
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 60;
+    width: 260px;
+    max-width: 85vw;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(2, 6, 23, 0.65);
+  }
+}
+

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./services.module.css";
-import { useFetch } from "../../../hooks/useFetch";
-import DataState from "../../../components/DataState";
-import { getRooms } from "../../../api/library";
+import imgPribadi from "../../../assets/ruangan/ruangan-pribadi.jpg";
+import imgMeeting from "../../../assets/ruangan/ruangan-meeting.jpg";
 
 /* ---------- ICONS & DECORATIONS ---------- */
 const LocationIcon = () => (
@@ -36,28 +35,61 @@ const ContourDeco = () => (
   </svg>
 );
 
-/* ---------- UI MAPPING ---------- */
-// Data ruangan/reservasi/ketentuan diambil dari public/data/rooms.json lewat fetch()
+/* ---------- STATIC DATA ---------- */
+const TIME_SLOTS = ["08.00–10.00", "10.00–12.00", "13.00–15.00", "15.00–17.00"];
+
+const ROOMS = [
+  {
+    id: "pribadi",
+    bannerImg: imgPribadi,
+    bannerTitle: "RUANGAN PRIBADI",
+    bannerSub: "LANTAI 2 · ZONA TENANG",
+    category: "BELAJAR MANDIRI",
+    title: "Ruangan Pribadi",
+    location: "Lantai 2, Zona Tenang",
+    capacity: "Kapasitas 1 orang",
+    facilities: ["AC", "Colokan", "Kedap suara", "Lampu baca"],
+    bookedSlot: "15.00–17.00",
+  },
+  {
+    id: "meeting",
+    bannerImg: imgMeeting,
+    bannerTitle: "RUANGAN MEETING",
+    bannerSub: "LANTAI 3 · SAYAP BARAT",
+    category: "DISKUSI KELOMPOK",
+    title: "Ruangan Meeting",
+    location: "Lantai 3, Sayap Barat",
+    capacity: "Kapasitas 5 orang atau lebih",
+    isGroup: true,
+    facilities: ["Proyektor", "Whiteboard", "AC", "Colokan"],
+    bookedSlot: "13.00–15.00",
+  },
+];
+
 const STATUS_BADGE = {
   "Menunggu persetujuan": styles.badgePending,
   "Disetujui": styles.badgeApproved,
   "Ditolak": styles.badgeRejected,
 };
 
-function ServicesContent({ data }) {
-  const { timeSlots, rooms, reservations, terms } = data;
+const MY_RESERVATIONS = [
+  { id: 1, room: "Ruangan Meeting", schedule: "Senin, 26 Okt 2026 · 10.00–12.00", status: "Menunggu persetujuan" },
+  { id: 2, room: "Ruangan Pribadi", schedule: "Rabu, 28 Okt 2026 · 13.00–15.00", status: "Disetujui" },
+  { id: 3, room: "Ruangan Meeting", schedule: "Kamis, 22 Okt 2026 · 08.00–10.00", status: "Ditolak" },
+];
 
+const TERMS = [
+  { title: "Persetujuan admin", desc: "Reservasi aktif setelah disetujui. Pantau statusnya di Reservasi Saya." },
+  { title: "Toleransi 15 menit", desc: "Lewat dari batas ini, reservasi dibatalkan dan sesi dilepas ke anggota lain." },
+  { title: "Pembatalan", desc: "Batalkan paling lambat 1 jam sebelum sesi dimulai." },
+];
+
+export default function Services() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [selectedSlots, setSelectedSlots] = useState({});
-
-  // Sesi tersedia = semua slot dikurangi slot yang sudah dipesan di tiap ruangan
-  const availableSessions = rooms.reduce(
-    (sum, room) => sum + timeSlots.filter((t) => t !== room.bookedSlot).length,
-    0
-  );
+  const [selectedSlots, setSelectedSlots] = useState({ pribadi: null, meeting: null });
 
   const handleSelectSlot = (roomId, time) => {
     setSelectedSlots((prev) => ({
@@ -81,12 +113,12 @@ function ServicesContent({ data }) {
         <div className={styles.statsCard}>
           <div className={styles.statCol}>
             <span className={styles.statLabel}>JENIS RUANGAN</span>
-            <span className={styles.statValue}>{rooms.length} Jenis</span>
+            <span className={styles.statValue}>2 Jenis</span>
           </div>
           <div className={styles.statDivider} />
           <div className={styles.statCol}>
             <span className={styles.statLabel}>SESI TERSEDIA HARI INI</span>
-            <span className={styles.statValue}>{availableSessions} Sesi</span>
+            <span className={styles.statValue}>6 Sesi</span>
           </div>
         </div>
       </section>
@@ -101,12 +133,20 @@ function ServicesContent({ data }) {
 
       {/* Room Cards Grid */}
       <section className={styles.cardsGrid}>
-        {rooms.map((room) => {
+        {ROOMS.map((room) => {
           const activeSlot = selectedSlots[room.id];
 
           return (
             <div key={room.id} className={styles.card}>
-              <div className={`${styles.banner} ${styles[room.bannerClass]}`}>
+              <div
+                className={styles.banner}
+                style={{
+                  backgroundImage: `url(${room.bannerImg})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                <div className={styles.bannerOverlay} />
                 <ContourDeco />
                 <div className={styles.bannerContent}>
                   <h2 className={styles.bannerTitle}>{room.bannerTitle}</h2>
@@ -140,7 +180,7 @@ function ServicesContent({ data }) {
                 <div className={styles.sessionSection}>
                   <div className={styles.sessionLabel}>PILIH SESI JADWAL:</div>
                   <div className={styles.slotGrid}>
-                    {timeSlots.map((time) => {
+                    {TIME_SLOTS.map((time) => {
                       const isBooked = time === room.bookedSlot;
                       const isSelected = activeSlot === time;
 
@@ -150,9 +190,8 @@ function ServicesContent({ data }) {
                           type="button"
                           disabled={isBooked}
                           onClick={() => handleSelectSlot(room.id, time)}
-                          className={`${styles.slotBtn} ${isSelected ? styles.slotBtnSelected : ""} ${
-                            isBooked ? styles.slotBtnBooked : ""
-                          }`}
+                          className={`${styles.slotBtn} ${isSelected ? styles.slotBtnSelected : ""} ${isBooked ? styles.slotBtnBooked : ""
+                            }`}
                           title={isBooked ? "Sesi sudah dipesan" : `Pilih sesi ${time}`}
                         >
                           {time}
@@ -176,7 +215,7 @@ function ServicesContent({ data }) {
         <div className={styles.infoCard}>
           <h2 className={styles.infoCardTitle}>Reservasi Saya</h2>
           <div className={styles.reservationList}>
-            {reservations.map((res) => (
+            {MY_RESERVATIONS.map((res) => (
               <div key={res.id} className={styles.reservationItem}>
                 <div className={styles.resLeft}>
                   <div className={styles.resRoomName}>{res.room}</div>
@@ -191,7 +230,7 @@ function ServicesContent({ data }) {
         <div className={styles.infoCard}>
           <h2 className={styles.infoCardTitle}>Ketentuan Reservasi</h2>
           <div className={styles.rulesList}>
-            {terms.map((term) => (
+            {TERMS.map((term) => (
               <div key={term.title} className={styles.ruleItem}>
                 <h3 className={styles.ruleHeading}>{term.title}</h3>
                 <p className={styles.ruleDesc}>{term.desc}</p>
@@ -202,19 +241,4 @@ function ServicesContent({ data }) {
       </section>
     </div>
   );
-}
-
-export default function Services() {
-  // Data diambil lewat fetch() dari public/data/rooms.json
-  const { data, loading, error, reload } = useFetch(getRooms);
-
-  if (loading || error) {
-    return (
-      <div className={styles.container}>
-        <DataState loading={loading} error={error} onRetry={reload} label="Memuat data layanan..." />
-      </div>
-    );
-  }
-
-  return <ServicesContent data={data} />;
 }
