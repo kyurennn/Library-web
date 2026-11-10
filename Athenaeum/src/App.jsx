@@ -1,6 +1,10 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./features/auth/AuthContext";
+import RequireRole from "./features/auth/RequireRole";
+import Login from "./features/auth/pages/login";
 import UserLayout from "./layouts/UserLayout";
+import StaffLayout from "./layouts/StaffLayout";
 import Homepage from "./features/user/pages/homepage";
 import Catalog from "./features/user/pages/catalog";
 import BookDetail from "./features/user/pages/book-detail";
@@ -12,13 +16,14 @@ import BookManager from "./features/admin/pages/book-manager";
 import EditBook from "./features/admin/pages/edit-book";
 import AdminHome from "./features/admin/pages/admin-home";
 import StaffManagement from "./features/admin/staff/StaffManagement";
+import RoomReservation from "./features/admin/pages/room-reservation";
 
 // Placeholder sementara untuk halaman yang belum dibuat
 const ComingSoon = ({ title }) => (
-  <main style={{ padding: "48px clamp(16px, 3vw, 40px)", color: "#94a3b8" }}>
-    <h1 style={{ color: "#f1f5f9", margin: 0 }}>{title}</h1>
+  <div style={{ color: "#94a3b8" }}>
+    <h1 style={{ margin: "0 0 8px", color: "#f1f5f9" }}>{title}</h1>
     <p>Halaman ini belum dibuat.</p>
-  </main>
+  </div>
 );
 
 export default function App() {
@@ -53,12 +58,12 @@ export default function App() {
           {/* ADMIN */}
           <Route element={<RequireRole role="admin" />}>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminHome />} />
+              <Route index element={<BookManager />} />
               <Route path="books" element={<BookManager />} />
               <Route path="books/edit/:id" element={<EditBook />} />
               <Route path="edit-book/:id" element={<EditBook />} />
               <Route path="dashboard" element={<AdminHome />} />
-              <Route path="reservations" element={<ComingSoon title="Reservasi Ruang" />} />
+              <Route path="reservations" element={<RoomReservation />} />
               <Route path="staff" element={<StaffManagement />} />
               <Route path="staff-management" element={<StaffManagement />} />
             </Route>
