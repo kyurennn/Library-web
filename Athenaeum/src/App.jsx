@@ -16,6 +16,7 @@ import BookManager from "./features/admin/pages/book-manager";
 import EditBook from "./features/admin/pages/edit-book";
 import AdminHome from "./features/admin/pages/admin-home";
 import StaffManagement from "./features/admin/staff/StaffManagement";
+import RoomReservation from "./features/admin/pages/room-reservation";
 
 // Placeholder sementara untuk halaman yang belum dibuat
 const ComingSoon = ({ title }) => (
@@ -62,7 +63,7 @@ export default function App() {
               <Route path="books/edit/:id" element={<EditBook />} />
               <Route path="edit-book/:id" element={<EditBook />} />
               <Route path="dashboard" element={<AdminHome />} />
-              <Route path="reservations" element={<ComingSoon title="Reservasi Ruang" />} />
+              <Route path="reservations" element={<RoomReservation />} />
               <Route path="staff" element={<StaffManagement />} />
               <Route path="staff-management" element={<StaffManagement />} />
             </Route>
