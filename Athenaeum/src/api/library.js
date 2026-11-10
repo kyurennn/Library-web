@@ -11,3 +11,13 @@ export const getLibrary = (signal) => fetchJson("library.json", { signal });
 export const getEvents = (signal) => fetchJson("events.json", { signal });
 export const getRooms = (signal) => fetchJson("rooms.json", { signal });
 export const getStaffDashboard = (signal) => fetchJson("staff-dashboard.json", { signal });
+export const getAdminDashboard = (signal) => fetchJson("admin-dashboard.json", { signal });
+export const getStaff = async (signal) => {
+  try {
+    return await fetchJson("staff.json", { signal });
+  } catch (err) {
+    const adminData = await fetchJson("admin-dashboard.json", { signal });
+    if (adminData && adminData.staff) return adminData.staff;
+    throw err;
+  }
+};
