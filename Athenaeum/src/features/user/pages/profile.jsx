@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./profile.module.css";
 import { useAuth } from "../../auth/AuthContext";
@@ -52,6 +52,31 @@ export default function Profile() {
   const [newPw, setNewPw] = useState("");
   const [repeatPw, setRepeatPw] = useState("");
   const [passwordStatus, setPasswordStatus] = useState(null);
+
+  const [externalData, setExternalData] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  const fetchExternalData = async () => {
+    setIsFetching(true);
+    setFetchError(null);
+    try {
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data dari server.");
+      }
+      const result = await response.json();
+      setExternalData(result);
+    } catch (err) {
+      setFetchError(err.message);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExternalData();
+  }, []);
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
@@ -137,7 +162,6 @@ export default function Profile() {
           </button>
         </aside>
 
-        {}
         <div className={styles.forms}>
           <section className={styles.panel}>
             <h2 className={styles.panelTitle}>Data Diri</h2>
@@ -222,6 +246,56 @@ export default function Profile() {
                 Ubah Kata Sandi
               </button>
             </form>
+          </section>
+
+          <section className={styles.panel}>
+            <h2 className={styles.panelTitle}>Aktivitas / Referensi Terkini</h2>
+            <p className={styles.panelSub}>Mengambil data secara asinkron dari API eksternal.</p>
+
+            {isFetching && (
+              <div style={{ padding: "1.5rem", textAlign: "center", color: "#60a5fa" }}>
+                <p style={{ fontSize: "0.95rem", fontWeight: "500" }}>⏳ Sedang memuat data dari server...</p>
+              </div>
+            )}
+
+            {fetchError && (
+              <div style={{ padding: "1rem", backgroundColor: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: "8px" }}>
+                <p className={`${styles.notice} ${styles.noticeError}`} role="status" style={{ margin: 0, marginBottom: "0.75rem" }}>
+                  ⚠️ Terjadi kesalahan: {fetchError}
+                </p>
+                <button 
+                  type="button" 
+                  className={styles.primaryBtn} 
+                  onClick={fetchExternalData} 
+                  style={{ width: "auto", padding: "0.5rem 1rem" }}
+                >
+                  Coba Lagi
+                </button>
+              </div>
+            )}
+
+            {!isFetching && !fetchError && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                {externalData.map((item) => (
+                  <div 
+                    key={item.id} 
+                    style={{ 
+                      padding: "1rem", 
+                      border: "1px solid rgba(255, 255, 255, 0.1)", 
+                      borderRadius: "8px",
+                      backgroundColor: "rgba(255, 255, 255, 0.02)"
+                    }}
+                  >
+                    <h4 style={{ fontWeight: "600", fontSize: "0.95rem", marginBottom: "0.25rem", color: "#fff" }}>
+                      {item.title}
+                    </h4>
+                    <p style={{ fontSize: "0.85rem", color: "#94a3b8", margin: 0 }}>
+                      {item.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>
