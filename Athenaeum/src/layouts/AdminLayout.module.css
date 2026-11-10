@@ -45,7 +45,7 @@
   width: 42px;
   height: 42px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: 50%;
   object-fit: cover;
   background: #1e293b;
 }
@@ -67,10 +67,18 @@
 }
 
 .profileRole {
-  color: #0099e5;
+  color: #38bdf8;
   font-size: 12px;
   font-weight: 600;
   margin-top: 2px;
+}
+
+.navLabel {
+  margin: 0 4px 10px;
+  color: #64748b;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
 }
 
 /* Navigation List */
@@ -127,19 +135,21 @@
   gap: 12px;
   padding: 10px 14px;
   background: transparent;
-  border: 0;
-  border-radius: 8px;
-  color: #94a3b8;
+  border: 1px solid #1c2a44;
+  border-radius: 10px;
+  color: #fb7185;
   font: inherit;
   font-size: 13.5px;
+  font-weight: 600;
   text-align: left;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s;
+  transition: all 0.2s ease;
 }
 
 .footLink:hover {
-  color: #fb7185;
+  color: #f43f5e;
   background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.3);
 }
 
 /* ---------- KONTEN UTAMA ---------- */

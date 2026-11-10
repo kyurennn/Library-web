@@ -63,7 +63,7 @@ const NAV_ITEMS = [
   { to: "/admin/dashboard", label: "Dashboard", icon: DashboardIcon },
   { to: "/admin", label: "Book Manager", icon: BookManagerIcon, isBookManager: true },
   { to: "/admin/reservations", label: "Reservasi Ruang", icon: RoomIcon },
-  { to: "/admin/staff", label: "Staff Manager", icon: StaffIcon },
+  { to: "/admin/staff", label: "Staff Manajemen", icon: StaffIcon },
 ];
 
 export default function AdminLayout() {
@@ -121,6 +121,7 @@ export default function AdminLayout() {
         </div>
 
         {/* Navigation */}
+        <p className={styles.navLabel}>NAVIGASI UTAMA</p>
         <nav className={styles.nav} aria-label="Navigasi admin">
           {NAV_ITEMS.map(({ to, label, icon: NavIcon, isBookManager }) => {
             const isActive = isBookManager
