@@ -1,10 +1,5 @@
 {
-  "timeSlots": [
-    "08.00–10.00",
-    "10.00–12.00",
-    "13.00–15.00",
-    "15.00–17.00"
-  ],
+  "timeSlots": ["08.00–10.00", "10.00–12.00", "13.00–15.00", "15.00–17.00"],
   "rooms": [
     {
       "id": "pribadi",
@@ -16,12 +11,7 @@
       "location": "Lantai 2, Zona Tenang",
       "capacity": "Kapasitas 1 orang",
       "isGroup": false,
-      "facilities": [
-        "AC",
-        "Colokan",
-        "Kedap suara",
-        "Lampu baca"
-      ],
+      "facilities": ["AC", "Colokan", "Kedap suara", "Lampu baca"],
       "bookedSlot": "15.00–17.00"
     },
     {
@@ -34,47 +24,18 @@
       "location": "Lantai 3, Sayap Barat",
       "capacity": "Kapasitas 5 orang atau lebih",
       "isGroup": true,
-      "facilities": [
-        "Proyektor",
-        "Whiteboard",
-        "AC",
-        "Colokan"
-      ],
+      "facilities": ["Proyektor", "Whiteboard", "AC", "Colokan"],
       "bookedSlot": "13.00–15.00"
     }
   ],
   "reservations": [
-    {
-      "id": 1,
-      "room": "Ruangan Meeting",
-      "schedule": "Senin, 26 Okt 2026 · 10.00–12.00",
-      "status": "Menunggu persetujuan"
-    },
-    {
-      "id": 2,
-      "room": "Ruangan Pribadi",
-      "schedule": "Rabu, 28 Okt 2026 · 13.00–15.00",
-      "status": "Disetujui"
-    },
-    {
-      "id": 3,
-      "room": "Ruangan Meeting",
-      "schedule": "Kamis, 22 Okt 2026 · 08.00–10.00",
-      "status": "Ditolak"
-    }
+    { "id": 1, "room": "Ruangan Meeting", "schedule": "Senin, 26 Okt 2026 · 10.00–12.00", "status": "Menunggu persetujuan" },
+    { "id": 2, "room": "Ruangan Pribadi", "schedule": "Rabu, 28 Okt 2026 · 13.00–15.00", "status": "Disetujui" },
+    { "id": 3, "room": "Ruangan Meeting", "schedule": "Kamis, 22 Okt 2026 · 08.00–10.00", "status": "Ditolak" }
   ],
   "terms": [
-    {
-      "title": "Persetujuan admin",
-      "desc": "Reservasi aktif setelah disetujui. Pantau statusnya di Reservasi Saya."
-    },
-    {
-      "title": "Toleransi 15 menit",
-      "desc": "Lewat dari batas ini, reservasi dibatalkan dan sesi dilepas ke anggota lain."
-    },
-    {
-      "title": "Pembatalan",
-      "desc": "Batalkan paling lambat 1 jam sebelum sesi dimulai."
-    }
+    { "title": "Persetujuan admin", "desc": "Reservasi aktif setelah disetujui. Pantau statusnya di Reservasi Saya." },
+    { "title": "Toleransi 15 menit", "desc": "Lewat dari batas ini, reservasi dibatalkan dan sesi dilepas ke anggota lain." },
+    { "title": "Pembatalan", "desc": "Batalkan paling lambat 1 jam sebelum sesi dimulai." }
   ]
 }
