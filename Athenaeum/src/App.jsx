@@ -11,7 +11,9 @@ import BookDetail from "./features/user/pages/book-detail";
 import Profile from "./features/user/pages/profile";
 import Services from "./features/user/pages/services";
 import StaffDashboard from "./features/staff/pages/dashboard";
-import AdminHome from "./features/admin/pages/admin-home";
+import AdminLayout from "./layouts/AdminLayout";
+import BookManager from "./features/admin/pages/book-manager";
+import EditBook from "./features/admin/pages/edit-book";
 
 // Placeholder sementara untuk halaman yang belum dibuat
 const ComingSoon = ({ title }) => (
@@ -52,7 +54,15 @@ export default function App() {
 
           {/* ADMIN */}
           <Route element={<RequireRole role="admin" />}>
-            <Route path="/admin" element={<AdminHome />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<BookManager />} />
+              <Route path="books" element={<BookManager />} />
+              <Route path="books/edit/:id" element={<EditBook />} />
+              <Route path="edit-book/:id" element={<EditBook />} />
+              <Route path="dashboard" element={<ComingSoon title="Dashboard Admin" />} />
+              <Route path="reservations" element={<ComingSoon title="Reservasi Ruang" />} />
+              <Route path="staff" element={<ComingSoon title="Staff Manager" />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

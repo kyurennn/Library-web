@@ -13,12 +13,12 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const addDays = (date, n) => new Date(date.getTime() + n * DAY_MS);
 const nf = new Intl.NumberFormat("id-ID");
 
-const fmtLong      = new Intl.DateTimeFormat("id-ID", { weekday: "long",  day: "numeric", month: "long",  year: "numeric" });
-const fmtShort     = new Intl.DateTimeFormat("id-ID", {                   day: "numeric", month: "short", year: "numeric" });
-const fmtDayMonth  = new Intl.DateTimeFormat("id-ID", {                   day: "numeric", month: "long" });
-const fmtMonthYear = new Intl.DateTimeFormat("id-ID", {                                  month: "long",  year: "numeric" });
-const fmtWeekday   = new Intl.DateTimeFormat("id-ID", { weekday: "short" });
-const fmtDay       = new Intl.DateTimeFormat("id-ID", {                   day: "numeric" });
+const fmtLong = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const fmtShort = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric" });
+const fmtDayMonth = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long" });
+const fmtMonthYear = new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric" });
+const fmtWeekday = new Intl.DateTimeFormat("id-ID", { weekday: "short" });
+const fmtDay = new Intl.DateTimeFormat("id-ID", { day: "numeric" });
 
 function greetingFor(date) {
   const h = date.getHours();
@@ -103,10 +103,10 @@ function BarChart({ days }) {
   const W = 520, H = 230, L = 36, R = 8, T = 12, B = 28, MAX = 130;
   const innerW = W - L - R;
   const innerH = H - T - B;
-  const slot   = innerW / days.length;
-  const barW   = 13;
-  const gap    = 3;
-  const y      = (v) => T + innerH - (v / MAX) * innerH;
+  const slot = innerW / days.length;
+  const barW = 13;
+  const gap = 3;
+  const y = (v) => T + innerH - (v / MAX) * innerH;
 
   return (
     <svg
@@ -175,12 +175,12 @@ function ReservationDialog({ reservation, dateLabel, onClose }) {
   }, [onClose]);
 
   const rows = [
-    ["Pemohon",      reservation.name],
-    ["Ruangan",      reservation.room],
-    ["Tanggal",      dateLabel],
-    ["Sesi",         reservation.time],
+    ["Pemohon", reservation.name],
+    ["Ruangan", reservation.room],
+    ["Tanggal", dateLabel],
+    ["Sesi", reservation.time],
     ["Jumlah orang", `${reservation.people} orang`],
-    ["Status",       "Menunggu persetujuan"],
+    ["Status", "Menunggu persetujuan"],
   ];
 
   return (
@@ -294,7 +294,7 @@ function DashboardError({ error, onRetry }) {
 function DashboardContent({ data, user }) {
   const { stats, weeklyFlow, pendingReservations, dueLoans, topBooks } = data;
 
-  const [today]         = useState(() => new Date());
+  const [today] = useState(() => new Date());
   const [selectedId, setSelectedId] = useState(null);
 
   const selected = pendingReservations.find((r) => r.id === selectedId) ?? null;
@@ -306,8 +306,8 @@ function DashboardContent({ data, user }) {
   });
 
   const rangeStart = weeklyDays[0].date;
-  const rangeEnd   = weeklyDays[weeklyDays.length - 1].date;
-  const maxTop     = Math.max(...topBooks.map((b) => b.count));
+  const rangeEnd = weeklyDays[weeklyDays.length - 1].date;
+  const maxTop = Math.max(...topBooks.map((b) => b.count));
 
   /* First name only for greeting */
   const firstName = user.name.split(" ")[0];
@@ -449,7 +449,7 @@ function DashboardContent({ data, user }) {
           </p>
           <ul className={styles.list}>
             {dueLoans.map((loan) => {
-              const due  = addDays(today, loan.dueOffset);
+              const due = addDays(today, loan.dueOffset);
               const late = -loan.dueOffset;
               return (
                 <li key={loan.id} className={styles.dueItem}>
@@ -536,10 +536,10 @@ function DashboardContent({ data, user }) {
    SIDEBAR NAV DATA
 ───────────────────────────────────────── */
 const NAV_ITEMS = [
-  { key: "dashboard",  label: "Dashboard",       Icon: DashboardIcon },
-  { key: "books",      label: "Book Manager",     Icon: BookIcon      },
-  { key: "reservasi",  label: "Reservasi Ruang",  Icon: RoomIcon      },
-  { key: "staff",      label: "Staff Manajemen",  Icon: StaffIcon     },
+  { key: "dashboard", label: "Dashboard", Icon: DashboardIcon },
+  { key: "books", label: "Book Manager", Icon: BookIcon },
+  { key: "reservasi", label: "Reservasi Ruang", Icon: RoomIcon },
+  { key: "staff", label: "Staff Manajemen", Icon: StaffIcon },
 ];
 
 function initialsOf(name) {
@@ -558,122 +558,37 @@ export default function AdminHome() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  /* Sidebar state */
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  /* Active nav (visual only — pages not implemented yet) */
-  const [activeNav, setActiveNav]   = useState("dashboard");
-
-  /* Fetch dashboard data */
-  const { data, loading, error, reload } = useFetch(getAdminDashboard);
-
   const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
   };
 
-  const closeDrawer = () => setDrawerOpen(false);
-
   return (
-    <div className={styles.shell}>
-      {/* ── MOBILE TOP BAR ── */}
-      <div className={styles.mobileBar}>
-        <button
-          type="button"
-          className={styles.burger}
-          aria-label={drawerOpen ? "Tutup menu" : "Buka menu"}
-          aria-expanded={drawerOpen}
-          onClick={() => setDrawerOpen((v) => !v)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-        <span className={styles.mobileBrand}>Athenaeum Admin</span>
-      </div>
-
-      {/* ── MOBILE OVERLAY ── */}
-      {drawerOpen && (
-        <div
-          className={styles.overlay}
-          onClick={closeDrawer}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* ══════════════════════════════════════
-          SIDEBAR
-      ══════════════════════════════════════ */}
-      <aside
-        className={`${styles.sidebar} ${drawerOpen ? styles.sidebarOpen : ""}`}
-        aria-label="Navigasi admin"
+    <main
+      style={{
+        minHeight: "100vh",
+        padding: "48px clamp(16px, 3vw, 40px)",
+        background: "#0a1020",
+        color: "#94a3b8",
+      }}
+    >
+      <h1 style={{ margin: "0 0 8px", color: "#f1f5f9" }}>Halo, {user.name}</h1>
+      <p style={{ margin: "0 0 24px" }}>Dashboard admin belum dibuat.</p>
+      <button
+        type="button"
+        onClick={handleLogout}
+        style={{
+          padding: "10px 18px",
+          background: "transparent",
+          border: "1px solid #1c2a44",
+          borderRadius: 10,
+          color: "#cbd5e1",
+          font: "inherit",
+          cursor: "pointer",
+        }}
       >
-        {/* Profile card */}
-        <div className={styles.profileCard}>
-          {user.avatar ? (
-            <img
-              className={styles.avatar}
-              src={user.avatar}
-              alt=""
-              width={42}
-              height={42}
-            />
-          ) : (
-            <span className={styles.avatar}>{initialsOf(user.name)}</span>
-          )}
-          <div className={styles.profileText}>
-            <span className={styles.profileName}>{user.name}</span>
-            <span className={styles.profileRole}>Administrator</span>
-          </div>
-        </div>
-
-        {/* Nav links */}
-        <p className={styles.navLabel} aria-hidden="true">
-          NAVIGASI UTAMA
-        </p>
-        <nav aria-label="Menu admin">
-          <ul className={styles.nav} role="list">
-            {NAV_ITEMS.map(({ key, label, Icon }) => (
-              <li key={key}>
-                <button
-                  type="button"
-                  className={`${styles.navBtn} ${activeNav === key ? styles.navBtnActive : ""}`}
-                  aria-current={activeNav === key ? "page" : undefined}
-                  onClick={() => {
-                    setActiveNav(key);
-                    closeDrawer();
-                  }}
-                >
-                  <Icon />
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Footer / Logout */}
-        <div className={styles.sidebarFooter}>
-          <button
-            type="button"
-            className={styles.logoutBtn}
-            onClick={handleLogout}
-          >
-            <LogoutIcon />
-            Keluar
-          </button>
-        </div>
-      </aside>
-
-      {/* ══════════════════════════════════════
-          MAIN
-      ══════════════════════════════════════ */}
-      <main className={styles.main} id="main-content">
-        {loading && <DashboardSkeleton />}
-        {!loading && error && <DashboardError error={error} onRetry={reload} />}
-        {!loading && !error && data && (
-          <DashboardContent data={data} user={user} />
-        )}
-      </main>
-    </div>
+        Keluar
+      </button>
+    </main>
   );
 }
