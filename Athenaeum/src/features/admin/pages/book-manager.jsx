@@ -303,6 +303,7 @@ export default function BookManager() {
                   <label className={styles.formLabel}>PENULIS</label>
                   <input
                     type="text"
+                    required
                     className={styles.formInput}
                     placeholder="Nama penulis atau pengarang"
                     value={formValues.author}
