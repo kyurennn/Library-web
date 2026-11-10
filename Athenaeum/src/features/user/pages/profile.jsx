@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./profile.module.css";
+import { useAuth } from "../../auth/AuthContext";
 
 import MF from "../../../assets/profile/MF.jpg";
 
@@ -40,6 +41,7 @@ function Notice({ status }) {
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [saved, setSaved] = useState({ name: USER.name, email: USER.email });
   const [name, setName] = useState(USER.name);
@@ -98,7 +100,8 @@ export default function Profile() {
   };
 
   const handleLogout = () => {
-    navigate("/");
+    logout();
+    navigate("/login", { replace: true });
   };
 
   return (
