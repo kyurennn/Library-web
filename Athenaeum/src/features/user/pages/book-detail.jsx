@@ -2,196 +2,10 @@ import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import styles from "./book-detail.module.css";
 
-import LP from "../../../assets/books/LP.jpg";
-import BM from "../../../assets/books/BM.jpg";
-import DTL from "../../../assets/books/DTL.jpg";
-import CL from "../../../assets/books/CL.jpg";
-import AH from "../../../assets/books/AH.jpg";
-import N5M from "../../../assets/books/N5M.jpg";
-import surrounded from "../../../assets/books/surrounded.jpg";
-import MRI from "../../../assets/books/MRI.jpg";
-import ARW from "../../../assets/books/ARW.jpg";
-
-/* ---------- DATA DETAIL BUKU ---------- */
-const BOOKS_DATA = {
-  1: {
-    id: 1,
-    title: "Laskar Pelangi",
-    genre: "Fiksi Indonesia",
-    year: "2005",
-    author: "Andrea Hirata",
-    publishDate: "1 September 2005",
-    location: "Rak B-12, Lantai 2 (Fiksi Indonesia)",
-    synopsis:
-      "Kisah sepuluh anak dari keluarga sederhana di Belitung yang bersekolah di SD Muhammadiyah dengan segala keterbatasannya, namun tetap semangat meraih mimpi.",
-    coverType: "image",
-    coverSrc: LP,
-  },
-  2: {
-    id: 2,
-    title: "Bumi Manusia",
-    genre: "Fiksi Sejarah",
-    year: "1980",
-    author: "Pramoedya Ananta Toer",
-    publishDate: "25 Agustus 1980",
-    location: "Rak B-05, Lantai 2 (Sastra Klasik)",
-    synopsis:
-      "Roman sejarah epik berlatar akhir abad ke-19 yang mengisahkan pergulatan batin dan pemikiran Minke, seorang anak bupati yang menempuh pendidikan di H.B.S. Surabaya di tengah feodalisme dan kolonialisme Hindia Belanda.",
-    coverType: "image",
-    coverSrc: BM,
-  },
-  3: {
-    id: 3,
-    title: "Di Tanah Lada",
-    genre: "Fiksi Kontemporer",
-    year: "2015",
-    author: "Ziggy Zezsyazeoviennazabrizkie",
-    publishDate: "10 November 2015",
-    location: "Rak B-18, Lantai 2 (Fiksi Indonesia)",
-    synopsis:
-      "Kisah Salva (Ava) dan P bersahabat dalam kepolosan masa kecil menghadapi kenyataan hidup orang dewasa yang keras dan penuh luka.",
-    coverType: "image",
-    coverSrc: DTL,
-  },
-  4: {
-    id: 4,
-    title: "Antarmuka Digital",
-    genre: "Sains & Rekayasa",
-    year: "2023",
-    author: "Prof. Maya Sari",
-    publishDate: "15 Maret 2023",
-    location: "Rak C-04, Lantai 3 (Teknologi & Desain)",
-    synopsis:
-      "Panduan komprehensif merancang antarmuka manusia-komputer modern berpusat pada pengguna, aksesibilitas, dan prinsip interaksi digital intuitif.",
-    coverType: "graphic",
-    graphicTheme: "themeAntarmuka",
-    graphicTitle: ["ANTARMUKA", "DIGITAL"],
-    graphicAuthor: "PROF. MAYA SARI",
-  },
-  5: {
-    id: 5,
-    title: "Surrounded by idiots",
-    genre: "Psikologi & Komunikasi",
-    year: "2019",
-    author: "Thomas Erikson",
-    publishDate: "30 Juli 2019",
-    location: "Rak A-08, Lantai 1 (Pengembangan Diri)",
-    synopsis:
-      "Buku pengantar memahami empat tipe kepribadian manusia (Merah, Kuning, Hijau, Biru) guna membangun komunikasi yang lebih efektif dan empati yang mendalam.",
-    coverType: "image",
-    coverSrc: surrounded,
-  },
-  6: {
-    id: 6,
-    title: "Sistem Otomasi",
-    genre: "Sains & Rekayasa",
-    year: "2022",
-    author: "Dr. Rizky Pratama",
-    publishDate: "12 Januari 2022",
-    location: "Rak C-11, Lantai 3 (Robotika & Otomasi)",
-    synopsis:
-      "Membahas arsitektur kontrol otomasi industri modern berbasis PLC, IoT, sistem kendali terdistribusi, serta integrasi kecerdasan buatan dalam manufaktur.",
-    coverType: "graphic",
-    graphicTheme: "themeOtomasi",
-    graphicTitle: ["SISTEM", "OTOMASI"],
-    graphicAuthor: "DR. RIZKY PRATAMA",
-  },
-  7: {
-    id: 7,
-    title: "Mirai",
-    genre: "Fiksi & Sastra",
-    year: "2018",
-    author: "Mamoru Hosoda",
-    publishDate: "20 Juli 2018",
-    location: "Rak B-22, Lantai 2 (Fiksi Terjemahan)",
-    synopsis:
-      "Kisah hangat seorang bocah laki-laki berusia empat tahun bernama Kun yang bertualang melintasi waktu bersama adik perempuannya yang datang dari masa depan.",
-    coverType: "image",
-    coverSrc: MRI,
-  },
-  8: {
-    id: 8,
-    title: "Desain UX",
-    genre: "AI & Komputer",
-    year: "2024",
-    author: "Arya Wardhana, Ph.D.",
-    publishDate: "14 Februari 2024",
-    location: "Rak C-02, Lantai 3 (Desain Digital)",
-    synopsis:
-      "Eksplorasi mendalam metode riset pengguna, wireframing, usability testing, micro-interactions, dan arsitektur informasi pada produk digital modern.",
-    coverType: "graphic",
-    graphicTheme: "themeUX",
-    graphicTitle: ["DESAIN", "UX"],
-    graphicAuthor: "ARYA WARDHANA, PH.D.",
-  },
-  9: {
-    id: 9,
-    title: "Art of Wars",
-    genre: "Filosofi & Refleksi",
-    year: "2016",
-    author: "Sun Tzu",
-    publishDate: "5 Mei 2016",
-    location: "Rak A-15, Lantai 1 (Filosofi & Taktik)",
-    synopsis:
-      "Risalah strategi militer klasik Tiongkok kuno yang mengajarkan seni kepemimpinan, kalkulasi cermat, dan penyelesaian konflik tanpa pertumpahan darah.",
-    coverType: "image",
-    coverSrc: ARW,
-  },
-  10: {
-    id: 10,
-    title: "Sang Pemimpi",
-    genre: "Fiksi & Sastra",
-    year: "2006",
-    author: "Andrea Hirata",
-    publishDate: "1 Juli 2006",
-    location: "Rak B-13, Lantai 2 (Fiksi Indonesia)",
-    synopsis:
-      "Sekuel Laskar Pelangi menceritakan masa remaja Ikal, Arai, dan Jimbron yang gigih mengejar cita-cita menuntut ilmu hingga ke Universitas Sorbonne di Paris.",
-    coverType: "graphic",
-    graphicTheme: "themePemimpi",
-    graphicTitle: ["SANG", "PEMIMPI"],
-    graphicAuthor: "ANDREA HIRATA",
-  },
-  11: {
-    id: 11,
-    title: "Negeri 5 Menara",
-    genre: "Fiksi Inspiratif",
-    year: "2009",
-    author: "A. Fuadi",
-    publishDate: "1 Juli 2009",
-    location: "Rak B-14, Lantai 2 (Fiksi Inspiratif)",
-    synopsis:
-      "Perjalanan Alif dan kelima sahabatnya di Pondok Madani dengan semboyan 'Man Jadda Wajada' dalam menuntut ilmu dan menggapai impian besar mereka.",
-    coverType: "image",
-    coverSrc: N5M,
-  },
-  12: {
-    id: 12,
-    title: "Cantik itu Luka",
-    genre: "Sastra Indonesia",
-    year: "2002",
-    author: "Eka Kurniawan",
-    publishDate: "1 Oktober 2002",
-    location: "Rak B-09, Lantai 2 (Sastra Indonesia)",
-    synopsis:
-      "Epos realisme magis tentang Dewi Ayu dan keluarganya berlatar sejarah pergolakan kolonialisme, pendudukan, dan kemerdekaan di Halimunda.",
-    coverType: "image",
-    coverSrc: CL,
-  },
-  13: {
-    id: 13,
-    title: "Atomic Habits",
-    genre: "Pengembangan Diri",
-    year: "2018",
-    author: "James Clear",
-    publishDate: "16 Oktober 2018",
-    location: "Rak A-02, Lantai 1 (Pengembangan Diri)",
-    synopsis:
-      "Panduan praktis dan terbukti untuk membangun kebiasaan baik serta memutus kebiasaan buruk dengan memanfaatkan kekuatan perubahan kecil 1% setiap hari.",
-    coverType: "image",
-    coverSrc: AH,
-  },
-};
+import { useFetch } from "../../../hooks/useFetch";
+import DataState from "../../../components/DataState";
+import { getBooks } from "../../../api/library";
+import { COVERS } from "../../../assets/images";
 
 /* ---------- GRAPHIC SVG PATTERN HELPER ---------- */
 function GraphicSvgPattern({ theme }) {
@@ -237,12 +51,38 @@ function GraphicSvgPattern({ theme }) {
 export default function BookDetail() {
   const { id } = useParams();
 
-  // Ambil data buku berdasarkan ID dari URL, default ke ID 1 (Laskar Pelangi) jika tidak ditemukan
-  const book = BOOKS_DATA[id] || BOOKS_DATA[1];
+  // Data diambil lewat fetch() dari public/data/books.json
+  const { data: books, loading, error, reload } = useFetch(getBooks);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  if (loading || error) {
+    return (
+      <div className={styles.page}>
+        <main className={styles.contentWrapper}>
+          <DataState loading={loading} error={error} onRetry={reload} label="Memuat detail buku..." />
+        </main>
+      </div>
+    );
+  }
+
+  // Cari buku berdasarkan ID dari URL
+  const book = books.find((b) => String(b.id) === id);
+
+  if (!book) {
+    return (
+      <div className={styles.page}>
+        <main className={styles.contentWrapper}>
+          <Link to="/catalog" className={styles.backLink}>
+            <span>Kembali ke Katalog</span>
+          </Link>
+          <DataState title="Buku tidak ditemukan" error={new Error(`Tidak ada buku dengan ID "${id}".`)} />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -267,10 +107,10 @@ export default function BookDetail() {
           {/* KOLOM KIRI: SAMPUL BUKU */}
           <div className={styles.coverColumn}>
             <div className={styles.coverCard}>
-              {book.coverType === "image" && book.coverSrc ? (
+              {book.coverType === "image" && COVERS[book.cover] ? (
                 <img
                   className={styles.coverImg}
-                  src={book.coverSrc}
+                  src={COVERS[book.cover]}
                   alt={`Sampul ${book.title}`}
                 />
               ) : book.coverType === "graphic" ? (

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./services.module.css";
+import imgPribadi from "../../../assets/ruangan/ruangan-pribadi.jpg";
+import imgMeeting from "../../../assets/ruangan/ruangan-meeting.jpg";
 
 /* ---------- ICONS & DECORATIONS ---------- */
 const LocationIcon = () => (
@@ -39,7 +41,7 @@ const TIME_SLOTS = ["08.00–10.00", "10.00–12.00", "13.00–15.00", "15.00–
 const ROOMS = [
   {
     id: "pribadi",
-    bannerClass: styles.bannerPribadi,
+    bannerImg: imgPribadi,
     bannerTitle: "RUANGAN PRIBADI",
     bannerSub: "LANTAI 2 · ZONA TENANG",
     category: "BELAJAR MANDIRI",
@@ -51,7 +53,7 @@ const ROOMS = [
   },
   {
     id: "meeting",
-    bannerClass: styles.bannerMeeting,
+    bannerImg: imgMeeting,
     bannerTitle: "RUANGAN MEETING",
     bannerSub: "LANTAI 3 · SAYAP BARAT",
     category: "DISKUSI KELOMPOK",
@@ -136,7 +138,15 @@ export default function Services() {
 
           return (
             <div key={room.id} className={styles.card}>
-              <div className={`${styles.banner} ${room.bannerClass}`}>
+              <div
+                className={styles.banner}
+                style={{
+                  backgroundImage: `url(${room.bannerImg})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                <div className={styles.bannerOverlay} />
                 <ContourDeco />
                 <div className={styles.bannerContent}>
                   <h2 className={styles.bannerTitle}>{room.bannerTitle}</h2>
@@ -180,9 +190,8 @@ export default function Services() {
                           type="button"
                           disabled={isBooked}
                           onClick={() => handleSelectSlot(room.id, time)}
-                          className={`${styles.slotBtn} ${isSelected ? styles.slotBtnSelected : ""} ${
-                            isBooked ? styles.slotBtnBooked : ""
-                          }`}
+                          className={`${styles.slotBtn} ${isSelected ? styles.slotBtnSelected : ""} ${isBooked ? styles.slotBtnBooked : ""
+                            }`}
                           title={isBooked ? "Sesi sudah dipesan" : `Pilih sesi ${time}`}
                         >
                           {time}
