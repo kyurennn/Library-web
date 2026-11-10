@@ -1,0 +1,63 @@
+[
+  {
+    "id": "ADM-01",
+    "name": "Agnes Tachyon",
+    "email": "agnes@perpus.example",
+    "role": "Admin",
+    "shift": "Shift Pagi",
+    "shiftTime": "08:00 - 13:00",
+    "status": "Aktif",
+    "avatar": "AT"
+  },
+  {
+    "id": "STF-02",
+    "name": "Raka Mahendra",
+    "email": "raka@perpus.example",
+    "role": "Pegawai",
+    "shift": "Shift Pagi",
+    "shiftTime": "08:00 - 13:00",
+    "status": "Aktif",
+    "avatar": null
+  },
+  {
+    "id": "STF-03",
+    "name": "Sekar Ayu Lestari",
+    "email": "sekar@perpus.example",
+    "role": "Pegawai",
+    "shift": "Shift Siang",
+    "shiftTime": "12:00 - 17:00",
+    "status": "Aktif",
+    "avatar": null
+  },
+  {
+    "id": "ADM-04",
+    "name": "Laras Wulandari",
+    "email": "laras@perpus.example",
+    "role": "Admin",
+    "shift": "Shift Siang",
+    "shiftTime": "12:00 - 17:00",
+    "status": "Aktif",
+    "avatar": null
+  },
+  {
+    "id": "STF-05",
+    "name": "Bima Prasetyo",
+    "email": "bima@perpus.example",
+    "role": "Pegawai",
+    "shift": "Shift Pagi",
+    "shiftTime": "08:00 - 13:00",
+    "status": "Aktif",
+    "avatar": null
+  },
+  {
+    "id": "STF-06",
+    "name": "Hendra Saputra",
+    "email": "hendra@perpus.example",
+    "role": "Pegawai",
+    "shift": "Shift Siang",
+    "shiftTime": "12:00 - 17:00",
+    "status": "Nonaktif",
+    "avatar": null
+  }
+]
+

@@ -62,7 +62,7 @@ export default function UserLayout() {
               <BookmarkIcon />
             </button>
 
-            <div className={styles.profile}>
+            <NavLink to="/profile" className={styles.profile} onClick={() => setOpen(false)}>
               {USER.avatar ? (
                 <img className={styles.avatar} src={USER.avatar} alt={USER.name} />
               ) : (
@@ -73,7 +73,7 @@ export default function UserLayout() {
                 <span className={styles.profileRole}>{USER.role}</span>
                 <span className={styles.profileRole}>{USER.badge}</span>
               </div>
-            </div>
+            </NavLink>
 
             <button
               type="button"
