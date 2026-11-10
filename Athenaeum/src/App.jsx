@@ -14,6 +14,8 @@ import StaffDashboard from "./features/staff/pages/dashboard";
 import AdminLayout from "./layouts/AdminLayout";
 import BookManager from "./features/admin/pages/book-manager";
 import EditBook from "./features/admin/pages/edit-book";
+import AdminHome from "./features/admin/pages/admin-home";
+import StaffManagement from "./features/admin/staff/StaffManagement";
 
 // Placeholder sementara untuk halaman yang belum dibuat
 const ComingSoon = ({ title }) => (
@@ -59,9 +61,10 @@ export default function App() {
               <Route path="books" element={<BookManager />} />
               <Route path="books/edit/:id" element={<EditBook />} />
               <Route path="edit-book/:id" element={<EditBook />} />
-              <Route path="dashboard" element={<ComingSoon title="Dashboard Admin" />} />
+              <Route path="dashboard" element={<AdminHome />} />
               <Route path="reservations" element={<ComingSoon title="Reservasi Ruang" />} />
-              <Route path="staff" element={<ComingSoon title="Staff Manager" />} />
+              <Route path="staff" element={<StaffManagement />} />
+              <Route path="staff-management" element={<StaffManagement />} />
             </Route>
           </Route>
 

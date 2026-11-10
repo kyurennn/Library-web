@@ -1,6 +1,5 @@
 // src/features/admin/pages/admin-home.jsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { useFetch } from "../../../hooks/useFetch";
 import { getAdminDashboard } from "../../../api/library";
@@ -46,42 +45,6 @@ const Ico = ({ children, size = 18 }) => (
   >
     {children}
   </svg>
-);
-
-const DashboardIcon = () => (
-  <Ico>
-    <rect x="3" y="3" width="7" height="7" rx="1.5" />
-    <rect x="14" y="3" width="7" height="7" rx="1.5" />
-    <rect x="3" y="14" width="7" height="7" rx="1.5" />
-    <rect x="14" y="14" width="7" height="7" rx="1.5" />
-  </Ico>
-);
-
-const BookIcon = () => (
-  <Ico>
-    <rect x="5" y="3" width="14" height="18" rx="2" />
-    <path d="M9 8h6M9 12h6" />
-  </Ico>
-);
-
-const RoomIcon = () => (
-  <Ico>
-    <path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17" />
-    <path d="M3 21h18M14 12h.01" />
-  </Ico>
-);
-
-const StaffIcon = () => (
-  <Ico>
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-  </Ico>
-);
-
-const LogoutIcon = () => (
-  <Ico>
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
-  </Ico>
 );
 
 const ChevronIcon = () => (
@@ -533,62 +496,15 @@ function DashboardContent({ data, user }) {
 }
 
 /* ─────────────────────────────────────────
-   SIDEBAR NAV DATA
-───────────────────────────────────────── */
-const NAV_ITEMS = [
-  { key: "dashboard", label: "Dashboard", Icon: DashboardIcon },
-  { key: "books", label: "Book Manager", Icon: BookIcon },
-  { key: "reservasi", label: "Reservasi Ruang", Icon: RoomIcon },
-  { key: "staff", label: "Staff Manajemen", Icon: StaffIcon },
-];
-
-function initialsOf(name) {
-  return name
-    .split(/\s+/)
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
-/* ─────────────────────────────────────────
-   ROOT: AdminHome (sidebar + main)
+   ROOT: AdminHome (Dashboard View)
 ───────────────────────────────────────── */
 export default function AdminHome() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { data, loading, error, reload } = useFetch(getAdminDashboard);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login", { replace: true });
-  };
+  if (loading) return <DashboardSkeleton />;
+  if (error) return <DashboardError error={error} onRetry={reload} />;
+  if (!data) return null;
 
-  return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: "48px clamp(16px, 3vw, 40px)",
-        background: "#0a1020",
-        color: "#94a3b8",
-      }}
-    >
-      <h1 style={{ margin: "0 0 8px", color: "#f1f5f9" }}>Halo, {user.name}</h1>
-      <p style={{ margin: "0 0 24px" }}>Dashboard admin belum dibuat.</p>
-      <button
-        type="button"
-        onClick={handleLogout}
-        style={{
-          padding: "10px 18px",
-          background: "transparent",
-          border: "1px solid #1c2a44",
-          borderRadius: 10,
-          color: "#cbd5e1",
-          font: "inherit",
-          cursor: "pointer",
-        }}
-      >
-        Keluar
-      </button>
-    </main>
-  );
+  return <DashboardContent data={data} user={user} />;
 }
