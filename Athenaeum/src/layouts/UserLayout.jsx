@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import styles from "./UserLayout.module.css";
-import { useAuth } from "../features/auth/AuthContext";
+import styles from "./userLayout.module.css";
+import MF from "../assets/profile/MF.jpg";
 
 const NAV_ITEMS = [
   { to: "/", label: "Home", end: true },
   { to: "/catalog", label: "Catalog" },
   { to: "/services", label: "Services & Facilities" },
 ];
+
+// Ganti dengan data user dari context/auth nantinya
+const USER = {
+  name: "Kane Fukukitaru",
+  role: "Member",
+  badge: "Reader",
+  avatar: MF,
+};
 
 const BookmarkIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
@@ -17,8 +25,6 @@ const BookmarkIcon = () => (
 
 export default function UserLayout() {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
-  const USER = { name: user.name, role: "Member", badge: "Reader", avatar: user.avatar };
   const initials = USER.name
     .split(" ")
     .map((n) => n[0])
@@ -56,18 +62,18 @@ export default function UserLayout() {
               <BookmarkIcon />
             </button>
 
-            <NavLink to="/profile" className={styles.profile} onClick={() => setOpen(false)}>
-  {USER.avatar ? (
-    <img className={styles.avatar} src={USER.avatar} alt={USER.name} />
-  ) : (
-    <span className={styles.avatar}>{initials}</span>
-  )}
-  <div className={styles.profileText}>
-    <span className={styles.profileName}>{USER.name}</span>
-    <span className={styles.profileRole}>{USER.role}</span>
-    <span className={styles.profileRole}>{USER.badge}</span>
-  </div>
-</NavLink>
+            <div className={styles.profile}>
+              {USER.avatar ? (
+                <img className={styles.avatar} src={USER.avatar} alt={USER.name} />
+              ) : (
+                <span className={styles.avatar}>{initials}</span>
+              )}
+              <div className={styles.profileText}>
+                <span className={styles.profileName}>{USER.name}</span>
+                <span className={styles.profileRole}>{USER.role}</span>
+                <span className={styles.profileRole}>{USER.badge}</span>
+              </div>
+            </div>
 
             <button
               type="button"
