@@ -1,49 +1,12 @@
 import { useEffect, useState } from "react";
 import styles from "./dashboard.module.css";
 import { useAuth } from "../../auth/AuthContext";
+import { useFetch } from "../../../hooks/useFetch";
+import DataState from "../../../components/DataState";
+import { getStaffDashboard } from "../../../api/library";
 
-/* ---------- DATA (ganti dengan data dari API nantinya) ---------- */
+// Data dashboard diambil dari public/data/staff-dashboard.json lewat fetch()
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-const WEEKLY_FLOW = [
-  { borrowed: 95, returned: 88 },
-  { borrowed: 108, returned: 95 },
-  { borrowed: 90, returned: 102 },
-  { borrowed: 118, returned: 98 },
-  { borrowed: 73, returned: 80 },
-  { borrowed: 37, returned: 29 },
-  { borrowed: 52, returned: 47 },
-];
-
-const INITIAL_PENDING = [
-  { id: 1, name: "Nadia Putri", room: "Meeting Room A", dayOffset: 0, time: "10:00–12:00", people: 6 },
-  { id: 2, name: "Salsabila Rahma", room: "Private Room 2", dayOffset: 0, time: "13:00–15:00", people: 1 },
-  { id: 3, name: "Dimas Aditya", room: "Meeting Room A", dayOffset: 1, time: "10:00–12:00", people: 8 },
-  { id: 4, name: "Intan Permata", room: "Private Room 3", dayOffset: 1, time: "15:00–17:00", people: 1 },
-];
-
-// dueOffset: selisih hari tenggat terhadap hari ini (negatif = sudah lewat)
-const DUE_LOANS = [
-  { id: 1, title: "Cantik Itu Luka", borrower: "Salsabila Rahma", dueOffset: -8, tone: "red" },
-  { id: 2, title: "Laskar Pelangi", borrower: "Rizky Pratama", dueOffset: -6, tone: "pink" },
-  { id: 3, title: "Sapiens", borrower: "Maya Anggraini", dueOffset: -3, tone: "purple" },
-  { id: 4, title: "Filosofi Teras", borrower: "Intan Permata", dueOffset: -2, tone: "green" },
-  { id: 5, title: "Negeri 5 Menara", borrower: "Bagas Wicaksono", dueOffset: 0, tone: "orange" },
-];
-
-const TOP_BOOKS = [
-  { id: 1, title: "Atomic Habits", count: 41, tone: "gold" },
-  { id: 2, title: "Pulang", count: 36, tone: "blue" },
-  { id: 3, title: "Laskar Pelangi", count: 33, tone: "pink" },
-  { id: 4, title: "Filosofi Teras", count: 29, tone: "green" },
-  { id: 5, title: "Sapiens", count: 24, tone: "purple" },
-];
-
-const STATS = {
-  activeLoans: 4912,
-  overdue: 214,
-  activeMembers: 6480,
-};
 
 /* ---------- HELPERS ---------- */
 const addDays = (date, n) => new Date(date.getTime() + n * DAY_MS);
@@ -201,22 +164,23 @@ function ReservationDialog({ reservation, dateLabel, onClose, onDecide }) {
 }
 
 /* ---------- PAGE ---------- */
-export default function StaffDashboard() {
+function DashboardContent({ data }) {
+  const { stats, weeklyFlow, pendingReservations, dueLoans, topBooks } = data;
   const { user } = useAuth();
   const [today] = useState(() => new Date());
-  const [pending, setPending] = useState(INITIAL_PENDING);
+  const [pending, setPending] = useState(pendingReservations);
   const [selectedId, setSelectedId] = useState(null);
   const [notice, setNotice] = useState("");
 
   const selected = pending.find((r) => r.id === selectedId) ?? null;
 
-  const weeklyDays = WEEKLY_FLOW.map((d, i) => {
-    const date = addDays(today, i - (WEEKLY_FLOW.length - 1));
+  const weeklyDays = weeklyFlow.map((d, i) => {
+    const date = addDays(today, i - (weeklyFlow.length - 1));
     return { ...d, date, label: `${fmtWeekday.format(date)} ${fmtDay.format(date)}` };
   });
   const rangeStart = weeklyDays[0].date;
   const rangeEnd = weeklyDays[weeklyDays.length - 1].date;
-  const maxTop = Math.max(...TOP_BOOKS.map((b) => b.count));
+  const maxTop = Math.max(...topBooks.map((b) => b.count));
 
   const handleDecision = (reservation, decision) => {
     setPending((list) => list.filter((r) => r.id !== reservation.id));
@@ -229,10 +193,10 @@ export default function StaffDashboard() {
       ["Laporan Ringkasan Perpustakaan", fmtLong.format(today)],
       [],
       ["Metrik", "Nilai"],
-      ["Pinjaman aktif", STATS.activeLoans],
-      ["Terlambat", STATS.overdue],
+      ["Pinjaman aktif", stats.activeLoans],
+      ["Terlambat", stats.overdue],
       ["Reservasi menunggu", pending.length],
-      ["Anggota aktif", STATS.activeMembers],
+      ["Anggota aktif", stats.activeMembers],
       [],
       ["Tanggal", "Dipinjam", "Dikembalikan"],
       ...weeklyDays.map((d) => [fmtShort.format(d.date), d.borrowed, d.returned]),
@@ -255,12 +219,12 @@ export default function StaffDashboard() {
         </button>
       </header>
 
-      {/* STATS */}
+      {/* stats */}
       <section className={styles.statsCard} aria-label="Ringkasan statistik">
         <div className={styles.stat}>
           <span className={styles.statLabel}>PINJAMAN AKTIF</span>
           <span className={`${styles.statValue} ${styles.cyan}`}>
-            {nf.format(STATS.activeLoans)} <small>Eks</small>
+            {nf.format(stats.activeLoans)} <small>Eks</small>
           </span>
           <span className={styles.statNote} data-tone="green">
             +4,2% dari minggu lalu
@@ -269,7 +233,7 @@ export default function StaffDashboard() {
         <div className={styles.stat}>
           <span className={styles.statLabel}>TERLAMBAT</span>
           <span className={`${styles.statValue} ${styles.red}`}>
-            {nf.format(STATS.overdue)} <small>Eks</small>
+            {nf.format(stats.overdue)} <small>Eks</small>
           </span>
           <span className={styles.statNote} data-tone="red">
             −1,8% penanganan denda
@@ -287,7 +251,7 @@ export default function StaffDashboard() {
         <div className={styles.stat}>
           <span className={styles.statLabel}>ANGGOTA AKTIF</span>
           <span className={`${styles.statValue} ${styles.green}`}>
-            {nf.format(STATS.activeMembers)} <small>Orang</small>
+            {nf.format(stats.activeMembers)} <small>Orang</small>
           </span>
           <span className={styles.statNote} data-tone="green">
             +12 anggota hari ini
@@ -357,7 +321,7 @@ export default function StaffDashboard() {
           <h2 className={styles.panelTitle}>Jatuh Tempo Terdekat</h2>
           <p className={styles.panelSub}>Prioritas buku yang harus segera ditindaklanjuti</p>
           <ul className={styles.list}>
-            {DUE_LOANS.map((loan) => {
+            {dueLoans.map((loan) => {
               const due = addDays(today, loan.dueOffset);
               const late = -loan.dueOffset;
               return (
@@ -388,7 +352,7 @@ export default function StaffDashboard() {
           <h2 className={styles.panelTitle}>Paling Sering Dipinjam</h2>
           <p className={styles.panelSub}>Buku terpopuler sepanjang periode {fmtMonthYear.format(today)}</p>
           <ul className={styles.list}>
-            {TOP_BOOKS.map((b) => (
+            {topBooks.map((b) => (
               <li key={b.id} className={styles.topItem}>
                 <span className={`${styles.cover} ${styles[`tone-${b.tone}`]}`}>{b.title[0]}</span>
                 <span className={styles.topBody}>
@@ -416,4 +380,15 @@ export default function StaffDashboard() {
       )}
     </div>
   );
+}
+
+export default function StaffDashboard() {
+  // Data diambil lewat fetch() dari public/data/staff-dashboard.json
+  const { data, loading, error, reload } = useFetch(getStaffDashboard);
+
+  if (loading || error) {
+    return <DataState loading={loading} error={error} onRetry={reload} label="Memuat dashboard..." />;
+  }
+
+  return <DashboardContent data={data} />;
 }

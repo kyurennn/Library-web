@@ -2,124 +2,13 @@ import { useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import styles from "./catalog.module.css";
 
-import LP from "../../../assets/books/LP.jpg";
-import BM from "../../../assets/books/BM.jpg";
-import tanahLadaCover from "../../../assets/books/DTL.jpg";
-import surroundedCover from "../../../assets/books/surrounded.jpg";
-import miraiCover from "../../../assets/books/MRI.jpg";
-import meditationsCover from "../../../assets/books/ARW.jpg";
+import { useFetch } from "../../../hooks/useFetch";
+import DataState from "../../../components/DataState";
+import { getBooks, getLibrary } from "../../../api/library";
+import { COVERS } from "../../../assets/images";
 
-/* ---------- KATEGORI FILTER ---------- */
-const CATEGORIES = [
-  "Semua Koleksi",
-  "Fiksi & Sastra",
-  "Sains & Rekayasa",
-  "Filosofi & Refleksi",
-  "AI & Komputer",
-  "Jurnal Ilmiah",
-];
-
-/* ---------- DATA 10 BUKU KATALOG (SESUAI DOKUMEN & MOCKUP) ---------- */
-const CATALOG_BOOKS = [
-  {
-    id: 1,
-    title: "Laskar Pelangi",
-    author: "Andrea Hirata",
-    category: "Fiksi & Sastra",
-    tag: "FIKSI & SASTRA",
-    coverType: "image",
-    coverSrc: LP,
-  },
-  {
-    id: 2,
-    title: "Bumi Manusia",
-    author: "Pramoedya Ananta Toer",
-    category: "Fiksi & Sastra",
-    tag: "FIKSI & SASTRA",
-    coverType: "image",
-    coverSrc: BM,
-  },
-  {
-    id: 3,
-    title: "Di Tanah Lada",
-    author: "Ziggy Zezsyazeoviennazabrizkie",
-    category: "Fiksi & Sastra",
-    tag: "AI & KOMPUTER",
-    coverType: "image",
-    coverSrc: tanahLadaCover,
-  },
-  {
-    id: 4,
-    title: "Antarmuka Digital",
-    author: "Prof. Maya Sari",
-    category: "Sains & Rekayasa",
-    tag: "SAINS & REKAYASA",
-    coverType: "graphic",
-    graphicTheme: "themeAntarmuka",
-    graphicTitle: ["ANTARMUKA", "DIGITAL"],
-    graphicAuthor: "PROF. MAYA SARI",
-  },
-  {
-    id: 5,
-    title: "Surrounded by idiots",
-    author: "Thomas Erikson",
-    category: "Filosofi & Refleksi",
-    tag: "SAINS & REKAYASA",
-    coverType: "image",
-    coverSrc: surroundedCover,
-  },
-  {
-    id: 6,
-    title: "Sistem Otomasi",
-    author: "Dr. Rizky Pratama",
-    category: "Sains & Rekayasa",
-    tag: "SAINS & REKAYASA",
-    coverType: "graphic",
-    graphicTheme: "themeOtomasi",
-    graphicTitle: ["SISTEM", "OTOMASI"],
-    graphicAuthor: "DR. RIZKY PRATAMA",
-  },
-  {
-    id: 7,
-    title: "Mirai",
-    author: "Mamoru Hosoda",
-    category: "Fiksi & Sastra",
-    tag: "SAINS & REKAYASA",
-    coverType: "image",
-    coverSrc: miraiCover,
-  },
-  {
-    id: 8,
-    title: "Desain UX",
-    author: "Arya Wardhana, Ph.D.",
-    category: "AI & Komputer",
-    tag: "AI & KOMPUTER",
-    coverType: "graphic",
-    graphicTheme: "themeUX",
-    graphicTitle: ["DESAIN", "UX"],
-    graphicAuthor: "ARYA WARDHANA, PH.D.",
-  },
-  {
-    id: 9,
-    title: "Art of Wars",
-    author: "Sun Tzu",
-    category: "Filosofi & Refleksi",
-    tag: "FILOSOFI & REFLEKSI",
-    coverType: "image",
-    coverSrc: meditationsCover,
-  },
-  {
-    id: 10,
-    title: "Sang Pemimpi",
-    author: "Andrea Hirata",
-    category: "Fiksi & Sastra",
-    tag: "FIKSI & SASTRA",
-    coverType: "graphic",
-    graphicTheme: "themePemimpi",
-    graphicTitle: ["SANG", "PEMIMPI"],
-    graphicAuthor: "ANDREA HIRATA",
-  },
-];
+const ALL_CATEGORY = "Semua Koleksi";
+const nf = new Intl.NumberFormat("id-ID");
 
 /* ---------- ICONS ---------- */
 const SearchIcon = ({ size = 20 }) => (
@@ -225,8 +114,9 @@ function GraphicSvgPattern({ theme }) {
 
 /* ---------- COVER RENDERER ---------- */
 function CatalogCover({ book }) {
-  if (book.coverType === "image" && book.coverSrc) {
-    return <img className={styles.coverImg} src={book.coverSrc} alt={`Sampul ${book.title}`} />;
+  const src = COVERS[book.cover];
+  if (book.coverType === "image" && src) {
+    return <img className={styles.coverImg} src={src} alt={`Sampul ${book.title}`} />;
   }
 
   if (book.coverType === "graphic") {
@@ -254,10 +144,14 @@ function CatalogCover({ book }) {
 export default function Catalog() {
   const [searchParams] = useSearchParams();
 
+  // Data diambil lewat fetch() dari public/data/*.json
+  const booksReq = useFetch(getBooks);
+  const libraryReq = useFetch(getLibrary);
+
   // Inisialisasi state pencarian dari query URL jika ada (misal dari navigasi homepage)
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const [author, setAuthor] = useState(searchParams.get("author") || "");
-  const [category, setCategory] = useState(searchParams.get("category") || CATEGORIES[0]);
+  const [category, setCategory] = useState(searchParams.get("category") || ALL_CATEGORY);
   const [sortBy, setSortBy] = useState("terbaru");
   const [view, setView] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);
@@ -268,8 +162,9 @@ export default function Catalog() {
     const q = query.trim().toLowerCase();
     const a = author.trim().toLowerCase();
 
-    let list = CATALOG_BOOKS.filter((b) => {
-      const matchCategory = category === CATEGORIES[0] || b.category.toLowerCase() === category.toLowerCase();
+    let list = (booksReq.data ?? []).filter((b) => {
+      if (!b.inCatalog) return false;
+      const matchCategory = category === ALL_CATEGORY || b.category.toLowerCase() === category.toLowerCase();
       const matchQuery = !q || b.title.toLowerCase().includes(q) || b.tag.toLowerCase().includes(q);
       const matchAuthor = !a || b.author.toLowerCase().includes(a);
       return matchCategory && matchQuery && matchAuthor;
@@ -285,14 +180,35 @@ export default function Catalog() {
     }
 
     return list;
-  }, [query, author, category, sortBy]);
+  }, [booksReq.data, query, author, category, sortBy]);
+
+  const loading = booksReq.loading || libraryReq.loading;
+  const error = booksReq.error || libraryReq.error;
+
+  if (loading || error) {
+    return (
+      <main className={styles.page}>
+        <DataState
+          loading={loading}
+          error={error}
+          label="Memuat katalog..."
+          onRetry={() => {
+            booksReq.reload();
+            libraryReq.reload();
+          }}
+        />
+      </main>
+    );
+  }
+
+  const { categories, stats, totalPages } = libraryReq.data;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= 3812) {
+    if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
       setPageInput(String(newPage));
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -301,7 +217,7 @@ export default function Catalog() {
 
   const handlePageInputBlur = () => {
     const parsed = parseInt(pageInput, 10);
-    if (!isNaN(parsed) && parsed >= 1 && parsed <= 3812) {
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= totalPages) {
       setCurrentPage(parsed);
     } else {
       setPageInput(String(currentPage));
@@ -322,12 +238,12 @@ export default function Catalog() {
         <div className={styles.stats}>
           <div className={styles.stat}>
             <span className={styles.statLabel}>TOTAL KOLEKSI</span>
-            <span className={styles.statValue}>42.850 Buku</span>
+            <span className={styles.statValue}>{nf.format(stats.totalCollection)} Buku</span>
           </div>
           <div className={styles.statDivider} />
           <div className={styles.stat}>
             <span className={styles.statLabel}>TOTAL JUDUL</span>
-            <span className={styles.statValueAlt}>38.120 Judul</span>
+            <span className={styles.statValueAlt}>{nf.format(stats.totalTitles)} Judul</span>
           </div>
         </div>
       </section>
@@ -366,7 +282,7 @@ export default function Catalog() {
         <div className={styles.categoryRow}>
           <span className={styles.categoryLabel}>KATEGORI:</span>
           <div className={styles.chips}>
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <button
                 key={c}
                 type="button"
@@ -384,7 +300,7 @@ export default function Catalog() {
       <section className={styles.resultsBar}>
         <p className={styles.resultsCount}>
           Menampilkan <strong>{filteredBooks.length > 0 ? `1–${filteredBooks.length}` : "0"}</strong> dari{" "}
-          <strong>{category === "Semua Koleksi" && !query && !author ? "38.120" : filteredBooks.length}</strong> judul koleksi
+          <strong>{category === ALL_CATEGORY && !query && !author ? nf.format(stats.totalTitles) : filteredBooks.length}</strong> judul koleksi
         </p>
 
         <div className={styles.controls}>
@@ -465,7 +381,7 @@ export default function Catalog() {
               if (e.key === "Enter") handlePageInputBlur();
             }}
           />
-          <span>dari 3.812 halaman</span>
+          <span>dari {nf.format(totalPages)} halaman</span>
         </div>
 
         <div className={styles.pageNav}>
@@ -507,17 +423,17 @@ export default function Catalog() {
 
           <button
             type="button"
-            className={`${styles.pageBtn} ${currentPage === 3812 ? styles.pageBtnActive : ""}`}
-            onClick={() => handlePageChange(3812)}
+            className={`${styles.pageBtn} ${currentPage === totalPages ? styles.pageBtnActive : ""}`}
+            onClick={() => handlePageChange(totalPages)}
           >
-            3.812
+            {nf.format(totalPages)}
           </button>
 
           <button
             type="button"
             className={styles.pageBtn}
             onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage >= 3812}
+            disabled={currentPage >= totalPages}
             aria-label="Halaman berikutnya"
           >
             <ChevronRightIcon />
