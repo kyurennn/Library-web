@@ -60,10 +60,35 @@ const LogoutIcon = () => (
 );
 
 const NAV_ITEMS = [
-  { to: "/admin/dashboard", label: "Dashboard", icon: DashboardIcon },
-  { to: "/admin", label: "Book Manager", icon: BookManagerIcon, isBookManager: true },
-  { to: "/admin/reservations", label: "Reservasi Ruang", icon: RoomIcon },
-  { to: "/admin/staff", label: "Staff Manajemen", icon: StaffIcon },
+  {
+    to: "/admin",
+    label: "Dashboard",
+    icon: DashboardIcon,
+    isActive: (pathname) =>
+      pathname === "/admin" ||
+      pathname === "/admin/" ||
+      pathname === "/admin/dashboard",
+  },
+  {
+    to: "/admin/books",
+    label: "Book Manager",
+    icon: BookManagerIcon,
+    isActive: (pathname) =>
+      pathname.startsWith("/admin/books") ||
+      pathname.startsWith("/admin/edit-book"),
+  },
+  {
+    to: "/admin/reservations",
+    label: "Reservasi Ruang",
+    icon: RoomIcon,
+    isActive: (pathname) => pathname.startsWith("/admin/reservations"),
+  },
+  {
+    to: "/admin/staff",
+    label: "Staff Manajemen",
+    icon: StaffIcon,
+    isActive: (pathname) => pathname.startsWith("/admin/staff"),
+  },
 ];
 
 export default function AdminLayout() {
@@ -78,12 +103,6 @@ export default function AdminLayout() {
     logout();
     navigate("/login", { replace: true });
   };
-
-  const isBookManagerActive =
-    location.pathname === "/admin" ||
-    location.pathname === "/admin/" ||
-    location.pathname.startsWith("/admin/books") ||
-    location.pathname.startsWith("/admin/edit-book");
 
   return (
     <div className={styles.shell}>
@@ -123,17 +142,15 @@ export default function AdminLayout() {
         {/* Navigation */}
         <p className={styles.navLabel}>NAVIGASI UTAMA</p>
         <nav className={styles.nav} aria-label="Navigasi admin">
-          {NAV_ITEMS.map(({ to, label, icon: NavIcon, isBookManager }) => {
-            const isActive = isBookManager
-              ? isBookManagerActive
-              : location.pathname === to;
+          {NAV_ITEMS.map(({ to, label, icon: NavIcon, isActive: checkActive }) => {
+            const active = checkActive(location.pathname);
 
             return (
               <NavLink
                 key={to}
                 to={to}
                 onClick={closeMenu}
-                className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
+                className={`${styles.navLink} ${active ? styles.navLinkActive : ""}`}
               >
                 <NavIcon />
                 {label}
