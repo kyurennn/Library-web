@@ -57,7 +57,7 @@ export default function App() {
           {/* ADMIN */}
           <Route element={<RequireRole role="admin" />}>
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<BookManager />} />
+              <Route index element={<AdminHome />} />
               <Route path="books" element={<BookManager />} />
               <Route path="books/edit/:id" element={<EditBook />} />
               <Route path="edit-book/:id" element={<EditBook />} />
