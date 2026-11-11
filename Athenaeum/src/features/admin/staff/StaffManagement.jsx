@@ -274,7 +274,7 @@ export default function StaffManagement() {
       <header className={styles.pageHeader}>
         <div className={styles.headerInfo}>
           <h1 className={styles.pageTitle}>
-            Staff Manajemen Perpustakaan <span aria-hidden="true">👥</span>
+            Staff Manajemen Perpustakaan
           </h1>
           <p className={styles.pageSubtitle}>
             Kelola hak akses akun, pembagian shift kerja, dan status aktif staf operasional.
