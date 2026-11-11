@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./dashboard.module.css";
 import { useAuth } from "../../auth/AuthContext";
 import { useFetch } from "../../../hooks/useFetch";
 import DataState from "../../../components/DataState";
-import { getStaffDashboard } from "../../../api/library";
-
+import { getStaffDashboard, getReservations  } from "../../../api/library";
+import ReservationModal from "../components/ReservationModal";
 // Data dashboard diambil dari public/data/staff-dashboard.json lewat fetch()
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -19,6 +19,7 @@ const fmtLong = new Intl.DateTimeFormat("id-ID", {
   year: "numeric",
 });
 const fmtShort = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric" });
+const fmtDayShort = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
 const fmtDayMonth = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long" });
 const fmtMonthYear = new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric" });
 const fmtWeekday = new Intl.DateTimeFormat("id-ID", { weekday: "short" });
@@ -108,71 +109,17 @@ function BarChart({ days }) {
   );
 }
 
-/* ---------- MODAL AUDIT RESERVASI ---------- */
-function ReservationDialog({ reservation, dateLabel, onClose, onDecide }) {
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  const rows = [
-    ["Pemohon", reservation.name],
-    ["Ruangan", reservation.room],
-    ["Tanggal", dateLabel],
-    ["Sesi", reservation.time],
-    ["Jumlah orang", `${reservation.people} orang`],
-    ["Status", "Menunggu persetujuan"],
-  ];
-
-  return (
-    <div className={styles.modalBackdrop} onClick={onClose}>
-      <div
-        className={styles.modal}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="audit-title"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h3 id="audit-title" className={styles.modalTitle}>
-          Audit Reservasi
-        </h3>
-        <dl className={styles.modalList}>
-          {rows.map(([k, v]) => (
-            <div key={k} className={styles.modalRow}>
-              <dt>{k}</dt>
-              <dd>{v}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className={styles.modalActions}>
-          <button type="button" className={styles.ghostBtn} onClick={onClose} autoFocus>
-            Tutup
-          </button>
-          <button type="button" className={styles.rejectBtn} onClick={() => onDecide(reservation, "ditolak")}>
-            Tolak
-          </button>
-          <button type="button" className={styles.approveBtn} onClick={() => onDecide(reservation, "disetujui")}>
-            Setujui
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ---------- PAGE ---------- */
-function DashboardContent({ data }) {
-  const { stats, weeklyFlow, pendingReservations, dueLoans, topBooks } = data;
+function DashboardContent({ data, reservationData  }) {
+  const { stats, weeklyFlow, dueLoans, topBooks } = data;
   const { user } = useAuth();
   const [today] = useState(() => new Date());
-  const [pending, setPending] = useState(pendingReservations);
+  const [items, setItems] = useState(reservationData.reservations);
+  const pending = items.filter((r) => r.status === "menunggu");
   const [selectedId, setSelectedId] = useState(null);
   const [notice, setNotice] = useState("");
 
-  const selected = pending.find((r) => r.id === selectedId) ?? null;
+  const selected = items.find((r) => r.id === selectedId) ?? null;
 
   const weeklyDays = weeklyFlow.map((d, i) => {
     const date = addDays(today, i - (weeklyFlow.length - 1));
@@ -182,8 +129,22 @@ function DashboardContent({ data }) {
   const rangeEnd = weeklyDays[weeklyDays.length - 1].date;
   const maxTop = Math.max(...topBooks.map((b) => b.count));
 
+    // Reservasi lain yang sudah disetujui pada ruang, hari, dan sesi yang sama
+  const clashOf = (r) =>
+    items.find(
+      (o) =>
+        o.status === "disetujui" && o.id !== r.id && o.room === r.room && o.dayOffset === r.dayOffset && o.time === r.time
+    );
+
   const handleDecision = (reservation, decision) => {
-    setPending((list) => list.filter((r) => r.id !== reservation.id));
+    if (decision === "disetujui") {
+      const clash = clashOf(reservation);
+      if (clash) {
+        setNotice(`Tidak bisa disetujui: ${reservation.room} pada ${reservation.time} sudah dipesan ${clash.name}.`);
+        return;
+      }
+    }
+    setItems((list) => list.map((r) => (r.id === reservation.id ? { ...r, status: decision } : r)));
     setSelectedId(null);
     setNotice(`Reservasi ${reservation.name} ${decision}.`);
   };
@@ -205,7 +166,6 @@ function DashboardContent({ data }) {
 
   return (
     <div className={styles.page}>
-      {/* HEADER */}
       <header className={styles.head}>
         <div>
           <h1 className={styles.title}>
@@ -371,11 +331,17 @@ function DashboardContent({ data }) {
       </div>
 
       {selected && (
-        <ReservationDialog
-          reservation={selected}
-          dateLabel={fmtLong.format(addDays(today, selected.dayOffset))}
+        <ReservationModal
+          reservation={{
+            ...selected,
+            capacity: reservationData.rooms.find((x) => x.name === selected.room)?.capacity,
+            dateLabel: fmtShort.format(addDays(today, selected.dayOffset)),
+            submittedLabel: `${fmtDayShort.format(addDays(today, selected.submittedOffset))} pukul ${selected.submittedTime} WIB`,
+            conflict: Boolean(clashOf(selected)),
+          }}
           onClose={() => setSelectedId(null)}
-          onDecide={handleDecision}
+          onApprove={() => handleDecision(selected, "disetujui")}
+          onReject={() => handleDecision(selected, "ditolak")}
         />
       )}
     </div>
@@ -383,12 +349,24 @@ function DashboardContent({ data }) {
 }
 
 export default function StaffDashboard() {
-  // Data diambil lewat fetch() dari public/data/staff-dashboard.json
-  const { data, loading, error, reload } = useFetch(getStaffDashboard);
+  const dash = useFetch(getStaffDashboard);
+  const resv = useFetch(getReservations);
+  const loading = dash.loading || resv.loading;
+  const error = dash.error || resv.error;
 
   if (loading || error) {
-    return <DataState loading={loading} error={error} onRetry={reload} label="Memuat dashboard..." />;
+    return (
+      <DataState
+        loading={loading}
+        error={error}
+        label="Memuat dashboard..."
+        onRetry={() => {
+          dash.reload();
+          resv.reload();
+        }}
+      />
+    );
   }
 
-  return <DashboardContent data={data} />;
+  return <DashboardContent data={dash.data} reservationData={resv.data} />;
 }

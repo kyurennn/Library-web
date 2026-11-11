@@ -11,6 +11,7 @@ export const getLibrary = (signal) => fetchJson("library.json", { signal });
 export const getEvents = (signal) => fetchJson("events.json", { signal });
 export const getRooms = (signal) => fetchJson("rooms.json", { signal });
 export const getStaffDashboard = (signal) => fetchJson("staff-dashboard.json", { signal });
+export const getReservations = (signal) => fetchJson("reservations.json", { signal });
 export const getAdminDashboard = (signal) => fetchJson("admin-dashboard.json", { signal });
 export const getStaff = async (signal) => {
   try {

@@ -126,14 +126,6 @@ export default function StaffLayout() {
         </nav>
 
         <div className={styles.sidebarFooter}>
-          <button type="button" className={styles.footLink}>
-            <HelpIcon />
-            Pusat Bantuan
-          </button>
-          <button type="button" className={styles.footLink}>
-            <SettingsIcon />
-            Pengaturan
-          </button>
           <button type="button" className={`${styles.footLink} ${styles.logout}`} onClick={handleLogout}>
             <LogoutIcon />
             Keluar
