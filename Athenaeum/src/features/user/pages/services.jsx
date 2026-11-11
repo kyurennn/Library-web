@@ -126,9 +126,6 @@ export default function Services() {
       {/* Sub-bar */}
       <div className={styles.filterBar}>
         <span className={styles.filterText}>Menampilkan ruangan yang tersedia:</span>
-        <button type="button" className={styles.moreBtn}>
-          Lihat Lainnya
-        </button>
       </div>
 
       {/* Room Cards Grid */}
