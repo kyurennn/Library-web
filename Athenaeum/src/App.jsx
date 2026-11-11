@@ -16,7 +16,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import BookManager from "./features/admin/pages/book-manager";
 import EditBook from "./features/admin/pages/edit-book";
 import AdminHome from "./features/admin/pages/admin-home";
-import StaffManagement from "./features/admin/staff/StaffManagement";
+import StaffManager from "./features/admin/pages/staff-manager";
 import RoomReservation from "./features/admin/pages/room-reservation";
 
 
@@ -66,8 +66,8 @@ export default function App() {
               <Route path="edit-book/:id" element={<EditBook />} />
               <Route path="dashboard" element={<AdminHome />} />
               <Route path="reservations" element={<RoomReservation />} />
-              <Route path="staff" element={<StaffManagement />} />
-              <Route path="staff-management" element={<StaffManagement />} />
+              <Route path="staff" element={<StaffManager />} />
+              <Route path="staff-management" element={<StaffManager />} />
             </Route>
           </Route>
 
