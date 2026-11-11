@@ -28,6 +28,7 @@ export default function EditBook() {
     category: bookData?.category || "fiksi",
     status: bookData?.status || "tersedia",
   }));
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     if (!bookData) {
@@ -39,9 +40,56 @@ export default function EditBook() {
     navigate("/admin/books");
   };
 
+  const handleInputChange = (field, value) => {
+    setFormValues((prev) => ({ ...prev, [field]: value }));
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const currentYear = new Date().getFullYear();
+
+    if (!formValues.title.trim()) {
+      errors.title = "Judul buku wajib diisi.";
+    } else if (formValues.title.trim().length < 2) {
+      errors.title = "Judul buku minimal 2 karakter.";
+    }
+
+    if (!formValues.author.trim()) {
+      errors.author = "Nama penulis wajib diisi.";
+    }
+
+    if (!formValues.year.trim()) {
+      errors.year = "Tahun terbit wajib diisi.";
+    } else if (!/^\d{4}$/.test(formValues.year.trim())) {
+      errors.year = "Tahun harus berupa 4 digit angka.";
+    } else {
+      const yearNum = parseInt(formValues.year.trim(), 10);
+      if (yearNum < 1500 || yearNum > currentYear + 1) {
+        errors.year = `Tahun harus antara 1500 dan ${currentYear + 1}.`;
+      }
+    }
+
+    if (!formValues.shelf.trim()) {
+      errors.shelf = "Lokasi rak wajib diisi.";
+    }
+
+    return errors;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formValues.title.trim()) return;
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
     updateAdminBook({
       id,
@@ -80,21 +128,23 @@ export default function EditBook() {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className={styles.formBody}>
             {/* Judul Buku */}
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>JUDUL BUKU</label>
               <input
                 type="text"
-                required
-                className={styles.formInput}
+                className={`${styles.formInput} ${
+                  formErrors.title ? styles.inputError : ""
+                }`}
                 placeholder="Masukkan judul buku"
                 value={formValues.title}
-                onChange={(e) =>
-                  setFormValues((prev) => ({ ...prev, title: e.target.value }))
-                }
+                onChange={(e) => handleInputChange("title", e.target.value)}
               />
+              {formErrors.title && (
+                <span className={styles.formErrorText}>{formErrors.title}</span>
+              )}
             </div>
 
             {/* Penulis */}
@@ -102,13 +152,16 @@ export default function EditBook() {
               <label className={styles.formLabel}>PENULIS</label>
               <input
                 type="text"
-                className={styles.formInput}
+                className={`${styles.formInput} ${
+                  formErrors.author ? styles.inputError : ""
+                }`}
                 placeholder="Nama penulis atau pengarang"
                 value={formValues.author}
-                onChange={(e) =>
-                  setFormValues((prev) => ({ ...prev, author: e.target.value }))
-                }
+                onChange={(e) => handleInputChange("author", e.target.value)}
               />
+              {formErrors.author && (
+                <span className={styles.formErrorText}>{formErrors.author}</span>
+              )}
             </div>
 
             {/* 2 Kolom: Tahun Terbit & Lokasi Rak */}
@@ -117,26 +170,32 @@ export default function EditBook() {
                 <label className={styles.formLabel}>TAHUN TERBIT</label>
                 <input
                   type="text"
-                  className={styles.formInput}
+                  className={`${styles.formInput} ${
+                    formErrors.year ? styles.inputError : ""
+                  }`}
                   placeholder="Contoh: 2005"
                   value={formValues.year}
-                  onChange={(e) =>
-                    setFormValues((prev) => ({ ...prev, year: e.target.value }))
-                  }
+                  onChange={(e) => handleInputChange("year", e.target.value)}
                 />
+                {formErrors.year && (
+                  <span className={styles.formErrorText}>{formErrors.year}</span>
+                )}
               </div>
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>LOKASI RAK</label>
                 <input
                   type="text"
-                  className={styles.formInput}
-                  placeholder="Contoh: A-01"
+                  className={`${styles.formInput} ${
+                    formErrors.shelf ? styles.inputError : ""
+                  }`}
+                  placeholder="Contoh: Rak A-01"
                   value={formValues.shelf}
-                  onChange={(e) =>
-                    setFormValues((prev) => ({ ...prev, shelf: e.target.value }))
-                  }
+                  onChange={(e) => handleInputChange("shelf", e.target.value)}
                 />
+                {formErrors.shelf && (
+                  <span className={styles.formErrorText}>{formErrors.shelf}</span>
+                )}
               </div>
             </div>
 

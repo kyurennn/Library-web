@@ -1,33 +1,37 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./book-manager.module.css";
-import initialBooksData from "../../../../public/data/books.json";
+import { getBooks } from "../../../api/library";
 import { COVERS } from "../../../assets/images";
 
-// Format data dari books.json agar memiliki cover dan field yang seragam
-export const INITIAL_BOOKS = initialBooksData.map((b) => ({
-  id: b.id,
-  title: b.title,
-  author: b.author,
-  year: b.year || "2024",
-  shelf: b.location ? b.location.split(",")[0].trim() : "Rak A-01",
-  category: b.category || "Fiksi & Sastra",
-  status: "tersedia",
-  cover: (b.cover && COVERS[b.cover]) ? COVERS[b.cover] : null,
-}));
+// Format data dari API agar memiliki struktur seragam
+export function formatBookItem(b) {
+  return {
+    id: b.id,
+    title: b.title,
+    author: b.author,
+    year: b.year || "2024",
+    shelf: b.location ? b.location.split(",")[0].trim() : "Rak A-01",
+    category: b.category || "Fiksi & Sastra",
+    status: b.status || "tersedia",
+    cover: b.cover && COVERS[b.cover] ? COVERS[b.cover] : null,
+  };
+}
 
-// Array data statis di memori
-let adminBooks = [...INITIAL_BOOKS];
+// Cache buku di memori untuk keperluan navigasi & edit
+let adminBooksCache = null;
 
 export function getAdminBooks() {
-  return adminBooks;
+  return adminBooksCache || [];
 }
 
 export function updateAdminBook(updatedBook) {
-  adminBooks = adminBooks.map((b) =>
-    String(b.id) === String(updatedBook.id) ? { ...b, ...updatedBook } : b
-  );
-  return adminBooks;
+  if (adminBooksCache) {
+    adminBooksCache = adminBooksCache.map((b) =>
+      String(b.id) === String(updatedBook.id) ? { ...b, ...updatedBook } : b
+    );
+  }
+  return adminBooksCache;
 }
 
 function getInitials(text) {
@@ -39,8 +43,35 @@ function getInitials(text) {
 
 export default function BookManager() {
   const navigate = useNavigate();
-  const [books, setBooks] = useState(() => getAdminBooks());
+  const [books, setBooks] = useState(() => adminBooksCache || []);
+  const [loading, setLoading] = useState(!adminBooksCache);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Fetch data buku menggunakan Fetch API
+  const fetchBooksData = useCallback(async (signal) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getBooks(signal);
+      const formatted = (Array.isArray(data) ? data : []).map(formatBookItem);
+      adminBooksCache = formatted;
+      setBooks(formatted);
+    } catch (err) {
+      if (err.name === "AbortError") return;
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!adminBooksCache) {
+      const controller = new AbortController();
+      fetchBooksData(controller.signal);
+      return () => controller.abort();
+    }
+  }, [fetchBooksData]);
 
   // Modal states: 'add' | 'delete' | 'detail' | null
   const [modal, setModal] = useState({ type: null, book: null });
@@ -54,6 +85,51 @@ export default function BookManager() {
     category: "fiksi",
     status: "tersedia",
   });
+  const [formErrors, setFormErrors] = useState({});
+
+  // Validasi form client-side
+  const validateForm = () => {
+    const errors = {};
+    const currentYear = new Date().getFullYear();
+
+    if (!formValues.title.trim()) {
+      errors.title = "Judul buku wajib diisi.";
+    } else if (formValues.title.trim().length < 2) {
+      errors.title = "Judul buku minimal 2 karakter.";
+    }
+
+    if (!formValues.author.trim()) {
+      errors.author = "Nama penulis wajib diisi.";
+    }
+
+    if (!formValues.year.trim()) {
+      errors.year = "Tahun terbit wajib diisi.";
+    } else if (!/^\d{4}$/.test(formValues.year.trim())) {
+      errors.year = "Tahun harus berupa 4 digit angka.";
+    } else {
+      const yearNum = parseInt(formValues.year.trim(), 10);
+      if (yearNum < 1500 || yearNum > currentYear + 1) {
+        errors.year = `Tahun harus antara 1500 dan ${currentYear + 1}.`;
+      }
+    }
+
+    if (!formValues.shelf.trim()) {
+      errors.shelf = "Lokasi rak wajib diisi.";
+    }
+
+    return errors;
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormValues((prev) => ({ ...prev, [field]: value }));
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
 
   // Filter pencarian buku
   const filteredBooks = useMemo(() => {
@@ -74,10 +150,11 @@ export default function BookManager() {
       title: "",
       author: "",
       year: new Date().getFullYear().toString(),
-      shelf: "A-01",
+      shelf: "Rak A-01",
       category: "fiksi",
       status: "tersedia",
     });
+    setFormErrors({});
     setModal({ type: "add", book: null });
   };
 
@@ -98,20 +175,25 @@ export default function BookManager() {
 
   // Tutup Modal
   const handleCloseModal = () => {
+    setFormErrors({});
     setModal({ type: null, book: null });
   };
 
   // Simpan Tambah Buku Baru
   const handleSubmitAdd = (e) => {
     e.preventDefault();
-    if (!formValues.title.trim()) return;
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
     const newBook = {
       id: Date.now(),
       title: formValues.title.trim(),
-      author: formValues.author.trim() || "Penulis Anonim",
-      year: formValues.year.trim() || new Date().getFullYear().toString(),
-      shelf: formValues.shelf.trim() || "Rak A-01",
+      author: formValues.author.trim(),
+      year: formValues.year.trim(),
+      shelf: formValues.shelf.trim(),
       category:
         formValues.category === "nonfiksi"
           ? "Sains & Komputer"
@@ -120,16 +202,16 @@ export default function BookManager() {
       cover: null,
     };
 
-    adminBooks = [newBook, ...adminBooks];
-    setBooks(adminBooks);
+    adminBooksCache = [newBook, ...books];
+    setBooks(adminBooksCache);
     handleCloseModal();
   };
 
   // Konfirmasi Hapus Buku
   const handleConfirmDelete = () => {
     if (!modal.book) return;
-    adminBooks = adminBooks.filter((b) => b.id !== modal.book.id);
-    setBooks(adminBooks);
+    adminBooksCache = books.filter((b) => b.id !== modal.book.id);
+    setBooks(adminBooksCache);
     handleCloseModal();
   };
 
@@ -212,7 +294,31 @@ export default function BookManager() {
                 </tr>
               </thead>
               <tbody>
-                {filteredBooks.length > 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan="7">
+                      <div className={styles.loadingBox}>
+                        <span className={styles.spinner} />
+                        Memuat data koleksi buku...
+                      </div>
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan="7">
+                      <div className={styles.errorBox}>
+                        <p>{error.message || "Gagal memuat data buku."}</p>
+                        <button
+                          type="button"
+                          className={styles.retryBtn}
+                          onClick={() => fetchBooksData()}
+                        >
+                          Coba Lagi
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredBooks.length > 0 ? (
                   filteredBooks.map((book, index) => (
                     <tr key={book.id}>
                       <td className={styles.colNo}>{index + 1}</td>
@@ -297,34 +403,42 @@ export default function BookManager() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmitAdd}>
+            <form onSubmit={handleSubmitAdd} noValidate>
               <div className={styles.modalBody}>
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>JUDUL BUKU</label>
                   <input
                     type="text"
-                    required
-                    className={styles.formInput}
+                    className={`${styles.formInput} ${
+                      formErrors.title ? styles.inputError : ""
+                    }`}
                     placeholder="Contoh: Laskar Pelangi"
                     value={formValues.title}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, title: e.target.value }))
-                    }
+                    onChange={(e) => handleInputChange("title", e.target.value)}
                   />
+                  {formErrors.title && (
+                    <span className={styles.formErrorText}>
+                      {formErrors.title}
+                    </span>
+                  )}
                 </div>
 
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>PENULIS</label>
                   <input
                     type="text"
-                    required
-                    className={styles.formInput}
+                    className={`${styles.formInput} ${
+                      formErrors.author ? styles.inputError : ""
+                    }`}
                     placeholder="Nama penulis atau pengarang"
                     value={formValues.author}
-                    onChange={(e) =>
-                      setFormValues((prev) => ({ ...prev, author: e.target.value }))
-                    }
+                    onChange={(e) => handleInputChange("author", e.target.value)}
                   />
+                  {formErrors.author && (
+                    <span className={styles.formErrorText}>
+                      {formErrors.author}
+                    </span>
+                  )}
                 </div>
 
                 <div className={styles.grid2Col}>
@@ -332,26 +446,36 @@ export default function BookManager() {
                     <label className={styles.formLabel}>TAHUN TERBIT</label>
                     <input
                       type="text"
-                      className={styles.formInput}
+                      className={`${styles.formInput} ${
+                        formErrors.year ? styles.inputError : ""
+                      }`}
                       placeholder="Contoh: 2024"
                       value={formValues.year}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, year: e.target.value }))
-                      }
+                      onChange={(e) => handleInputChange("year", e.target.value)}
                     />
+                    {formErrors.year && (
+                      <span className={styles.formErrorText}>
+                        {formErrors.year}
+                      </span>
+                    )}
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>LOKASI RAK</label>
                     <input
                       type="text"
-                      className={styles.formInput}
-                      placeholder="Contoh: A-01"
+                      className={`${styles.formInput} ${
+                        formErrors.shelf ? styles.inputError : ""
+                      }`}
+                      placeholder="Contoh: Rak A-01"
                       value={formValues.shelf}
-                      onChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, shelf: e.target.value }))
-                      }
+                      onChange={(e) => handleInputChange("shelf", e.target.value)}
                     />
+                    {formErrors.shelf && (
+                      <span className={styles.formErrorText}>
+                        {formErrors.shelf}
+                      </span>
+                    )}
                   </div>
                 </div>
 

@@ -128,6 +128,21 @@
   color: #475569;
 }
 
+.inputError {
+  border-color: #e11d48 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2) !important;
+}
+
+.formErrorText {
+  color: #fb7185;
+  font-size: 11.5px;
+  font-weight: 500;
+  margin-top: -2px;
+}
+
 .formInput:focus {
   border-color: #0099e5;
   box-shadow: 0 0 0 3px rgba(0, 153, 229, 0.15);
