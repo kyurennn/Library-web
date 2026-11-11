@@ -11,12 +11,14 @@ import BookDetail from "./features/user/pages/book-detail";
 import Profile from "./features/user/pages/profile";
 import Services from "./features/user/pages/services";
 import StaffDashboard from "./features/staff/pages/dashboard";
+import Reservations from "./features/staff/pages/reservations";
 import AdminLayout from "./layouts/AdminLayout";
 import BookManager from "./features/admin/pages/book-manager";
 import EditBook from "./features/admin/pages/edit-book";
 import AdminHome from "./features/admin/pages/admin-home";
-import StaffManagement from "./features/admin/staff/StaffManagement";
+import StaffManager from "./features/admin/pages/staff-manager";
 import RoomReservation from "./features/admin/pages/room-reservation";
+
 
 // Placeholder sementara untuk halaman yang belum dibuat
 const ComingSoon = ({ title }) => (
@@ -50,7 +52,7 @@ export default function App() {
           <Route element={<RequireRole role="staff" />}>
             <Route path="/staff" element={<StaffLayout />}>
               <Route index element={<StaffDashboard />} />
-              <Route path="reservations" element={<ComingSoon title="Reservasi Ruang" />} />
+              <Route path="reservations" element={<Reservations />} />
               <Route path="loans" element={<ComingSoon title="Pinjaman Buku" />} />
             </Route>
           </Route>
@@ -64,8 +66,8 @@ export default function App() {
               <Route path="edit-book/:id" element={<EditBook />} />
               <Route path="dashboard" element={<AdminHome />} />
               <Route path="reservations" element={<RoomReservation />} />
-              <Route path="staff" element={<StaffManagement />} />
-              <Route path="staff-management" element={<StaffManagement />} />
+              <Route path="staff" element={<StaffManager />} />
+              <Route path="staff-management" element={<StaffManager />} />
             </Route>
           </Route>
 
