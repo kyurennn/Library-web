@@ -61,16 +61,6 @@ const ChevronRightIcon = () => (
 
 /* ---------- GRAPHIC COVER SVG PATTERNS ---------- */
 function GraphicSvgPattern({ theme }) {
-  if (theme === "themeBumiManusia") {
-    return (
-      <svg viewBox="0 0 200 280" className={styles.graphicCoverSvg} preserveAspectRatio="none">
-        <circle cx="180" cy="50" r="40" fill="none" stroke="#cca352" strokeWidth="1" strokeOpacity="0.4" />
-        <circle cx="180" cy="50" r="70" fill="none" stroke="#cca352" strokeWidth="1" strokeOpacity="0.3" />
-        <circle cx="180" cy="50" r="105" fill="none" stroke="#cca352" strokeWidth="1" strokeOpacity="0.2" />
-        <circle cx="180" cy="50" r="145" fill="none" stroke="#cca352" strokeWidth="1" strokeOpacity="0.12" />
-      </svg>
-    );
-  }
   if (theme === "themeAntarmuka") {
     return (
       <svg viewBox="0 0 200 280" className={styles.graphicCoverSvg} preserveAspectRatio="none">
@@ -272,7 +262,7 @@ export default function Catalog() {
               />
             </label>
 
-            <button type="submit" className={styles.searchBtn}>
+            <button type="" className={styles.searchBtn}>
               <SearchIcon size={18} />
               Cari Buku
             </button>
