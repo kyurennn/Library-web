@@ -1,6 +1,7 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./book-manager.module.css";
+import { useFetch } from "../../../hooks/useFetch";
 import { getBooks } from "../../../api/library";
 import { COVERS } from "../../../assets/images";
 
@@ -43,35 +44,20 @@ function getInitials(text) {
 
 export default function BookManager() {
   const navigate = useNavigate();
+  const { data, loading: fetchLoading, error, reload } = useFetch(getBooks);
   const [books, setBooks] = useState(() => adminBooksCache || []);
-  const [loading, setLoading] = useState(!adminBooksCache);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch data buku menggunakan Fetch API
-  const fetchBooksData = useCallback(async (signal) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getBooks(signal);
+  const loading = !adminBooksCache && fetchLoading;
+
+  // Sinkronkan data hasil fetch API ke state & cache lokal
+  useEffect(() => {
+    if (data && !adminBooksCache) {
       const formatted = (Array.isArray(data) ? data : []).map(formatBookItem);
       adminBooksCache = formatted;
       setBooks(formatted);
-    } catch (err) {
-      if (err.name === "AbortError") return;
-      setError(err);
-    } finally {
-      setLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    if (!adminBooksCache) {
-      const controller = new AbortController();
-      fetchBooksData(controller.signal);
-      return () => controller.abort();
-    }
-  }, [fetchBooksData]);
+  }, [data]);
 
   // Modal states: 'add' | 'delete' | 'detail' | null
   const [modal, setModal] = useState({ type: null, book: null });
@@ -311,7 +297,7 @@ export default function BookManager() {
                         <button
                           type="button"
                           className={styles.retryBtn}
-                          onClick={() => fetchBooksData()}
+                          onClick={reload}
                         >
                           Coba Lagi
                         </button>
