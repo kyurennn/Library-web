@@ -1,54 +1,20 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./book-manager.module.css";
-import LP from "../../../assets/books/LP.jpg";
-import BM from "../../../assets/books/BM.jpg";
-import N5M from "../../../assets/books/N5M.jpg";
-import CL from "../../../assets/books/CL.jpg";
+import initialBooksData from "../../../../public/data/books.json";
+import { COVERS } from "../../../assets/images";
 
-// Data dummy statis
-export const INITIAL_BOOKS = [
-  {
-    id: 1,
-    title: "Laskar Pelangi",
-    author: "Andrea Hirata",
-    year: "2005",
-    shelf: "A-01",
-    category: "fiksi",
-    status: "tersedia",
-    cover: LP,
-  },
-  {
-    id: 2,
-    title: "Bumi Manusia",
-    author: "Pramoedya Ananta Toer",
-    year: "1980",
-    shelf: "B-03",
-    category: "fiksi",
-    status: "tersedia",
-    cover: BM,
-  },
-  {
-    id: 3,
-    title: "Negeri 5 Menara",
-    author: "Ahmad Fuadi",
-    year: "2009",
-    shelf: "A-07",
-    category: "fiksi",
-    status: "tersedia",
-    cover: N5M,
-  },
-  {
-    id: 4,
-    title: "Cantik Itu Luka",
-    author: "Eka Kurniawan",
-    year: "2002",
-    shelf: "C-02",
-    category: "fiksi",
-    status: "tersedia",
-    cover: CL,
-  },
-];
+// Format data dari books.json agar memiliki cover dan field yang seragam
+export const INITIAL_BOOKS = initialBooksData.map((b) => ({
+  id: b.id,
+  title: b.title,
+  author: b.author,
+  year: b.year || "2024",
+  shelf: b.location ? b.location.split(",")[0].trim() : "Rak A-01",
+  category: b.category || "Fiksi & Sastra",
+  status: "tersedia",
+  cover: (b.cover && COVERS[b.cover]) ? COVERS[b.cover] : null,
+}));
 
 // Array data statis di memori
 let adminBooks = [...INITIAL_BOOKS];
@@ -145,10 +111,13 @@ export default function BookManager() {
       title: formValues.title.trim(),
       author: formValues.author.trim() || "Penulis Anonim",
       year: formValues.year.trim() || new Date().getFullYear().toString(),
-      shelf: formValues.shelf.trim() || "A-01",
-      category: formValues.category,
-      status: formValues.status,
-      cover: LP,
+      shelf: formValues.shelf.trim() || "Rak A-01",
+      category:
+        formValues.category === "nonfiksi"
+          ? "Sains & Komputer"
+          : "Fiksi & Sastra",
+      status: formValues.status || "tersedia",
+      cover: null,
     };
 
     adminBooks = [newBook, ...adminBooks];
@@ -195,7 +164,6 @@ export default function BookManager() {
         <div className={styles.headerRow}>
           <div className={styles.titleArea}>
             <h1 className={styles.title}>Daftar Koleksi Buku</h1>
-            <p className={styles.subtitle}>Pilih judul untuk melihat detail buku</p>
           </div>
 
           <button type="button" className={styles.addBtn} onClick={handleOpenAdd}>
@@ -249,22 +217,27 @@ export default function BookManager() {
                     <tr key={book.id}>
                       <td className={styles.colNo}>{index + 1}</td>
                       <td className={styles.colCover}>
-                        <img
-                          src={book.cover}
-                          alt={book.title}
-                          className={styles.coverThumb}
-                          onClick={() => handleOpenDetail(book)}
-                          style={{ cursor: "pointer" }}
-                        />
+                        {book.cover ? (
+                          <img
+                            src={book.cover}
+                            alt={book.title}
+                            className={styles.coverThumb}
+                            onClick={() => handleOpenDetail(book)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        ) : (
+                          <div
+                            className={styles.coverPlaceholder}
+                            onClick={() => handleOpenDetail(book)}
+                            style={{ cursor: "pointer" }}
+                            title={book.title}
+                          >
+                            {getInitials(book.title)}
+                          </div>
+                        )}
                       </td>
                       <td>
-                        <button
-                          type="button"
-                          className={styles.bookTitleLink}
-                          onClick={() => handleOpenDetail(book)}
-                        >
-                          {book.title}
-                        </button>
+                        {book.title}
                       </td>
                       <td>{book.author}</td>
                       <td>{book.year}</td>
@@ -344,6 +317,7 @@ export default function BookManager() {
                   <label className={styles.formLabel}>PENULIS</label>
                   <input
                     type="text"
+                    required
                     className={styles.formInput}
                     placeholder="Nama penulis atau pengarang"
                     value={formValues.author}
@@ -411,37 +385,6 @@ export default function BookManager() {
                     </div>
                   </div>
                 </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>STATUS KETERSEDIAAN</label>
-                  <div className={styles.cardOptionsGrid}>
-                    <div
-                      className={`${styles.selectCard} ${formValues.status === "tersedia" ? styles.selectCardActive : ""
-                        }`}
-                      onClick={() =>
-                        setFormValues((prev) => ({ ...prev, status: "tersedia" }))
-                      }
-                    >
-                      <span className={styles.cardHead}>Siap Dipinjam</span>
-                      <p className={styles.cardDesc}>
-                        Tersedia di rak untuk dipinjam anggota
-                      </p>
-                    </div>
-
-                    <div
-                      className={`${styles.selectCard} ${formValues.status === "dipinjam" ? styles.selectCardActive : ""
-                        }`}
-                      onClick={() =>
-                        setFormValues((prev) => ({ ...prev, status: "dipinjam" }))
-                      }
-                    >
-                      <span className={styles.cardHead}>Sedang Dipinjam</span>
-                      <p className={styles.cardDesc}>
-                        Buku sedang dibawa oleh anggota perpustakaan
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div className={styles.modalFooter}>
@@ -475,14 +418,8 @@ export default function BookManager() {
                 </div>
                 <div className={styles.headerInfo}>
                   <h2 className={styles.modalTitle}>Hapus Koleksi Buku</h2>
-                  <span className={styles.modalSubtitleId}>
-                    ID: #BK-{String(modal.book.id).padStart(2, "0")}
-                  </span>
                 </div>
               </div>
-              <button type="button" className={styles.closeBtn} onClick={handleCloseModal}>
-                ✕
-              </button>
             </div>
             <div className={styles.modalBody}>
               <p style={{ margin: 0, color: "#cbd5e1", fontSize: "14px", lineHeight: "1.6" }}>
@@ -533,11 +470,17 @@ export default function BookManager() {
             </div>
             <div className={styles.modalBody}>
               <div className={styles.detailGrid}>
-                <img
-                  src={modal.book.cover}
-                  alt={modal.book.title}
-                  className={styles.detailCover}
-                />
+                {modal.book.cover ? (
+                  <img
+                    src={modal.book.cover}
+                    alt={modal.book.title}
+                    className={styles.detailCover}
+                  />
+                ) : (
+                  <div className={styles.detailCoverPlaceholder}>
+                    {getInitials(modal.book.title)}
+                  </div>
+                )}
                 <div className={styles.detailInfo}>
                   <h3 className={styles.detailTitle}>{modal.book.title}</h3>
                   <div className={styles.detailMeta}>
