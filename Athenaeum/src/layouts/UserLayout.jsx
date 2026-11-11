@@ -52,10 +52,6 @@ export default function UserLayout() {
           </nav>
 
           <div className={styles.right}>
-            <button type="button" className={styles.iconBtn} aria-label="Bookmark">
-              <BookmarkIcon />
-            </button>
-
             <NavLink to="/profile" className={styles.profile} onClick={() => setOpen(false)}>
               {USER.avatar ? (
                 <img className={styles.avatar} src={USER.avatar} alt={USER.name} />
