@@ -13,12 +13,6 @@
     { "borrowed": 37, "returned": 29 },
     { "borrowed": 52, "returned": 47 }
   ],
-  "pendingReservations": [
-    { "id": 1, "name": "Nadia Putri", "room": "Meeting Room A", "dayOffset": 0, "time": "10:00–12:00", "people": 6 },
-    { "id": 2, "name": "Salsabila Rahma", "room": "Private Room 2", "dayOffset": 0, "time": "13:00–15:00", "people": 1 },
-    { "id": 3, "name": "Dimas Aditya", "room": "Meeting Room A", "dayOffset": 1, "time": "10:00–12:00", "people": 8 },
-    { "id": 4, "name": "Intan Permata", "room": "Private Room 3", "dayOffset": 1, "time": "15:00–17:00", "people": 1 }
-  ],
   "dueLoans": [
     { "id": 1, "title": "Cantik Itu Luka", "borrower": "Salsabila Rahma", "dueOffset": -8, "tone": "red" },
     { "id": 2, "title": "Laskar Pelangi", "borrower": "Rizky Pratama", "dueOffset": -6, "tone": "pink" },
