@@ -10,7 +10,6 @@ import { COVERS, NEWS_IMAGES } from "../../../assets/images";
 const ALL_CATEGORY = "Semua Koleksi";
 const nf = new Intl.NumberFormat("id-ID");
 
-/* ---------- ICONS ---------- */
 const SearchIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <circle cx="11" cy="11" r="7" />
@@ -43,7 +42,6 @@ const ChevronIcon = () => (
   </svg>
 );
 
-/* ---------- SUB COMPONENTS ---------- */
 function BookCover({ book }) {
   const src = COVERS[book.cover];
   if (src) {
@@ -105,7 +103,6 @@ function EventCard({ event }) {
   );
 }
 
-/* ---------- PAGE ---------- */
 export default function Homepage() {
   const navigate = useNavigate();
 
@@ -165,7 +162,6 @@ export default function Homepage() {
 
   return (
     <main className={styles.page}>
-      {/* HERO */}
       <section className={styles.hero}>
         <div>
           <h1 className={styles.heroTitle}>Explore Our Collections</h1>
@@ -187,7 +183,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* SEARCH PANEL */}
       <section className={styles.searchPanel}>
         <form onSubmit={handleSearchSubmit}>
         </form>
@@ -228,7 +223,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* LATEST CATALOG */}
       <section className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Latest Catalog</h2>
@@ -288,7 +282,7 @@ export default function Homepage() {
         )}
       </section>
 
-      {/* EVENT & NEWS */}
+
       <section className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Event &amp; News</h2>

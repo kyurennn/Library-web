@@ -1,16 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-/**
- * Hook untuk mengambil data saat komponen tampil.
- *
- *   const { data, loading, error, reload } = useFetch(getBooks);
- *
- * - `fetcher` harus fungsi yang stabil (didefinisikan di luar komponen),
- *   menerima AbortSignal dan mengembalikan Promise.
- * - loading : true selama data belum datang
- * - error   : objek Error jika gagal (null jika berhasil)
- * - reload  : memanggil ulang request (untuk tombol "Coba lagi")
- */
+//Hook untuk mengambil data saat komponen tampil.
 export function useFetch(fetcher) {
   const [state, setState] = useState({ data: null, error: null, loading: true });
   const [attempt, setAttempt] = useState(0);

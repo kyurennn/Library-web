@@ -6,7 +6,6 @@
   margin: 0 auto;
 }
 
-/* ---------- HEADER ---------- */
 .title {
   margin: 0 0 6px;
   font-size: clamp(24px, 3vw, 32px);
@@ -78,7 +77,6 @@
   color: #fb7185;
 }
 
-/* ---------- STATISTIK ---------- */
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -94,7 +92,6 @@
   border-radius: 16px;
 }
 
-/* pendar warna halus di pojok kanan bawah */
 .statCard::after {
   content: "";
   position: absolute;

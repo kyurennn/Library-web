@@ -81,9 +81,8 @@ export default function Login() {
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
 
-  // Sudah login -> langsung ke beranda role-nya
+  // landing page bisa ada role
   if (user) return <Navigate to={ROLE_HOME[user.role]} replace />;
-
   const copy = ROLE_COPY[role];
 
   const handleRoleChange = (next) => {
@@ -109,7 +108,6 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
-      {/* ---------- KIRI: HERO ---------- */}
       <section className={styles.hero}>
         <div className={styles.brandPill}>
           <span className={styles.brandIcon}>
@@ -143,7 +141,6 @@ export default function Login() {
         </div>
       </section>
 
-      {/* ---------- KANAN: FORM ---------- */}
       <section className={styles.formSide}>
         <div className={styles.card}>
           {role !== "user" && (
@@ -234,7 +231,6 @@ export default function Login() {
                 {error}
               </p>
             )}
-
             <button type="submit" className={styles.submitBtn}>
               Masuk Sekarang
               <ArrowIcon />

@@ -2,12 +2,7 @@ import MF from "../../assets/profile/MF.jpg";
 import WA from "../../assets/profile/WA.jpg";
 import AT from "../../assets/profile/AT.png";
 
-/*
- * DATA AKUN SEMENTARA (mock).
- * Kredensial di sisi klien hanya untuk prototipe/demo: siapa pun bisa
- * melihatnya lewat bundle JS. Ganti dengan autentikasi ke backend
- * (token/cookie httpOnly) sebelum dipakai sungguhan.
- */
+//data mock temp
 const ACCOUNTS = [
   {
     username: "Kane Fukukitaru",

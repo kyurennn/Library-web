@@ -2,11 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { ROLE_HOME } from "./accounts";
 
-/**
- * Membungkus sekelompok rute agar hanya bisa dibuka oleh role tertentu.
- * - Belum login  -> /login
- * - Salah role   -> dialihkan ke halaman utama role miliknya
- */
+// harus login
 export default function RequireRole({ role }) {
   const { user } = useAuth();
   const location = useLocation();

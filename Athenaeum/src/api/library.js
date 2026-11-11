@@ -1,11 +1,7 @@
 import { fetchJson } from "./client";
 
-/*
- * Daftar "endpoint" data aplikasi. Setiap fungsi menerima AbortSignal
- * agar request bisa dibatalkan saat halaman ditutup.
- *
- * Sumber data saat ini: Mock API berupa file JSON di public/data/.
- */
+// Mock API dari file JSON di public/data/.
+
 export const getBooks = (signal) => fetchJson("books.json", { signal });
 export const getLibrary = (signal) => fetchJson("library.json", { signal });
 export const getEvents = (signal) => fetchJson("events.json", { signal });

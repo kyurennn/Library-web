@@ -2,11 +2,8 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import { authenticate, findUser } from "./accounts";
 
 const STORAGE_KEY = "athenaeum.session";
-
 const AuthContext = createContext(null);
 
-// Sesi hanya menyimpan username; data user diambil ulang dari daftar akun
-// sehingga role tidak bisa diubah lewat storage.
 function loadSession() {
   try {
     const username = localStorage.getItem(STORAGE_KEY) ?? sessionStorage.getItem(STORAGE_KEY);
