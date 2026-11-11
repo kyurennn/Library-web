@@ -13,18 +13,11 @@
     { "borrowed": 37, "returned": 29 },
     { "borrowed": 52, "returned": 47 }
   ],
-  "dueLoans": [
-    { "id": 1, "title": "Cantik Itu Luka", "borrower": "Salsabila Rahma", "dueOffset": -8, "tone": "red" },
-    { "id": 2, "title": "Laskar Pelangi", "borrower": "Rizky Pratama", "dueOffset": -6, "tone": "pink" },
-    { "id": 3, "title": "Sapiens", "borrower": "Maya Anggraini", "dueOffset": -3, "tone": "purple" },
-    { "id": 4, "title": "Filosofi Teras", "borrower": "Intan Permata", "dueOffset": -2, "tone": "green" },
-    { "id": 5, "title": "Negeri 5 Menara", "borrower": "Bagas Wicaksono", "dueOffset": 0, "tone": "orange" }
-  ],
   "topBooks": [
-    { "id": 1, "title": "Atomic Habits", "count": 41, "tone": "gold" },
-    { "id": 2, "title": "Pulang", "count": 36, "tone": "blue" },
-    { "id": 3, "title": "Laskar Pelangi", "count": 33, "tone": "pink" },
-    { "id": 4, "title": "Filosofi Teras", "count": 29, "tone": "green" },
-    { "id": 5, "title": "Sapiens", "count": 24, "tone": "purple" }
+    { "bookId": 13, "count": 41 },
+    { "bookId": 1, "count": 36 },
+    { "bookId": 12, "count": 33 },
+    { "bookId": 11, "count": 29 },
+    { "bookId": 2, "count": 24 }
   ]
 }
