@@ -1,0 +1,50 @@
+{
+  "rules": {
+    "finePerDay": 1000,
+    "durations": [
+      { "days": 7, "label": "Singkat" },
+      { "days": 14, "label": "Standar" },
+      { "days": 21, "label": "Panjang" }
+    ],
+    "defaultDuration": 14,
+    "dueSoonDays": 3
+  },
+  "summary": {
+    "activeLoans": 4912,
+    "overdue": 214,
+    "runningFines": 1480000
+  },
+  "stock": {
+    "1": 4,
+    "2": 3,
+    "3": 2,
+    "5": 3,
+    "7": 2,
+    "9": 2,
+    "11": 3,
+    "12": 3,
+    "13": 5
+  },
+  "members": [
+    { "id": "LIB-2026-0118", "name": "Salsabila Rahma", "verified": true },
+    { "id": "LIB-2025-0342", "name": "Rizky Pratama", "verified": true },
+    { "id": "LIB-2025-0567", "name": "Maya Anggraini", "verified": true },
+    { "id": "LIB-2024-0811", "name": "Intan Permata", "verified": true },
+    { "id": "LIB-2023-0490", "name": "Bagas Wicaksono", "verified": true },
+    { "id": "LIB-2024-0418", "name": "Nadia Putri", "verified": true },
+    { "id": "LIB-2024-0630", "name": "Dimas Aditya", "verified": false },
+    { "id": "LIB-2023-0277", "name": "Fajar Nugraha", "verified": true },
+    { "id": "LIB-2026-0021", "name": "Aulia Ramadhani", "verified": true },
+    { "id": "LIB-2026-0103", "name": "Kevin Saputra", "verified": false }
+  ],
+  "loans": [
+    { "id": 1, "bookId": 12, "memberId": "LIB-2026-0118", "borrowOffset": -22, "durationDays": 14 },
+    { "id": 2, "bookId": 1, "memberId": "LIB-2025-0342", "borrowOffset": -20, "durationDays": 14 },
+    { "id": 3, "bookId": 7, "memberId": "LIB-2025-0567", "borrowOffset": -17, "durationDays": 14 },
+    { "id": 4, "bookId": 9, "memberId": "LIB-2024-0811", "borrowOffset": -16, "durationDays": 14 },
+    { "id": 5, "bookId": 11, "memberId": "LIB-2023-0490", "borrowOffset": -14, "durationDays": 14 },
+    { "id": 6, "bookId": 2, "memberId": "LIB-2024-0418", "borrowOffset": -12, "durationDays": 14 },
+    { "id": 7, "bookId": 5, "memberId": "LIB-2024-0630", "borrowOffset": -7, "durationDays": 14 },
+    { "id": 8, "bookId": 13, "memberId": "LIB-2023-0277", "borrowOffset": -4, "durationDays": 14 }
+  ]
+}

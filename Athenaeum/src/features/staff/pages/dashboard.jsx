@@ -3,8 +3,10 @@ import styles from "./dashboard.module.css";
 import { useAuth } from "../../auth/AuthContext";
 import { useFetch } from "../../../hooks/useFetch";
 import DataState from "../../../components/DataState";
-import { getStaffDashboard, getReservations  } from "../../../api/library";
+import { getStaffDashboard, getReservations, getBooks, getLoans } from "../../../api/library";
 import ReservationModal from "../components/ReservationModal";
+import BookThumb from "../components/BookThumb";
+import { hydrateLoans, loanStatus, startOfDay } from "../loanUtils";
 // Data dashboard diambil dari public/data/staff-dashboard.json lewat fetch()
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -110,10 +112,21 @@ function BarChart({ days }) {
 }
 
 /* ---------- PAGE ---------- */
-function DashboardContent({ data, reservationData  }) {
-  const { stats, weeklyFlow, dueLoans, topBooks } = data;
+function DashboardContent({ data, reservationData, books, loanData }) {
+  const { stats, weeklyFlow } = data;
   const { user } = useAuth();
   const [today] = useState(() => new Date());
+
+  // Jatuh tempo terdekat: 5 pinjaman aktif (loans.json + books.json) dengan tenggat paling dekat/terlewat
+  const dueLoans = hydrateLoans(loanData.loans, books, loanData.members, startOfDay(today))
+    .sort((a, b) => a.dueDate - b.dueDate)
+    .slice(0, 5)
+    .map((l) => ({ ...l, status: loanStatus(l, startOfDay(today), loanData.rules) }));
+
+  // Paling sering dipinjam: hitungan dari staff-dashboard.json, detail buku dari books.json
+  const topBooks = data.topBooks
+    .map((t) => ({ ...t, book: books.find((b) => b.id === t.bookId) }))
+    .filter((t) => t.book);
   const [items, setItems] = useState(reservationData.reservations);
   const pending = items.filter((r) => r.status === "menunggu");
   const [selectedId, setSelectedId] = useState(null);
@@ -281,30 +294,24 @@ function DashboardContent({ data, reservationData  }) {
           <h2 className={styles.panelTitle}>Jatuh Tempo Terdekat</h2>
           <p className={styles.panelSub}>Prioritas buku yang harus segera ditindaklanjuti</p>
           <ul className={styles.list}>
-            {dueLoans.map((loan) => {
-              const due = addDays(today, loan.dueOffset);
-              const late = -loan.dueOffset;
-              return (
-                <li key={loan.id} className={styles.dueItem}>
-                  <span className={`${styles.cover} ${styles[`tone-${loan.tone}`]}`}>{loan.title[0]}</span>
-                  <span className={styles.dueBody}>
-                    <strong>{loan.title}</strong>
-                    <span>
-                      {loan.borrower} · Tenggat {fmtShort.format(due)}
-                    </span>
+            {dueLoans.length === 0 && <li className={styles.empty}>Tidak ada pinjaman aktif.</li>}
+            {dueLoans.map((loan) => (
+              <li key={loan.id} className={styles.dueItem}>
+                <BookThumb book={loan.book} width={34} height={44} />
+                <span className={styles.dueBody}>
+                  <strong>{loan.book.title}</strong>
+                  <span>
+                    {loan.member.name} · Tenggat {fmtShort.format(loan.dueDate)}
                   </span>
-                  {late > 0 ? (
-                    <span className={styles.pill} data-tone="red">
-                      <i className={styles.dot} /> Terlambat {late} hari
-                    </span>
-                  ) : (
-                    <span className={styles.pill} data-tone="amber">
-                      <i className={styles.dot} /> Hari Ini
-                    </span>
-                  )}
-                </li>
-              );
-            })}
+                </span>
+                <span
+                  className={styles.pill}
+                  data-tone={loan.status.kind === "terlambat" ? "red" : loan.status.kind === "dekat" ? "amber" : "green"}
+                >
+                  <i className={styles.dot} /> {loan.status.label}
+                </span>
+              </li>
+            ))}
           </ul>
         </section>
 
@@ -313,11 +320,11 @@ function DashboardContent({ data, reservationData  }) {
           <p className={styles.panelSub}>Buku terpopuler sepanjang periode {fmtMonthYear.format(today)}</p>
           <ul className={styles.list}>
             {topBooks.map((b) => (
-              <li key={b.id} className={styles.topItem}>
-                <span className={`${styles.cover} ${styles[`tone-${b.tone}`]}`}>{b.title[0]}</span>
+              <li key={b.bookId} className={styles.topItem}>
+                <BookThumb book={b.book} width={34} height={44} />
                 <span className={styles.topBody}>
                   <span className={styles.topHead}>
-                    <strong>{b.title}</strong>
+                    <strong>{b.book.title}</strong>
                     <span className={styles.topCount}>{b.count}x</span>
                   </span>
                   <span className={styles.track}>
@@ -351,8 +358,11 @@ function DashboardContent({ data, reservationData  }) {
 export default function StaffDashboard() {
   const dash = useFetch(getStaffDashboard);
   const resv = useFetch(getReservations);
-  const loading = dash.loading || resv.loading;
-  const error = dash.error || resv.error;
+  const books = useFetch(getBooks);
+  const loans = useFetch(getLoans);
+  const all = [dash, resv, books, loans];
+  const loading = all.some((r) => r.loading);
+  const error = all.find((r) => r.error)?.error ?? null;
 
   if (loading || error) {
     return (
@@ -360,13 +370,10 @@ export default function StaffDashboard() {
         loading={loading}
         error={error}
         label="Memuat dashboard..."
-        onRetry={() => {
-          dash.reload();
-          resv.reload();
-        }}
+        onRetry={() => all.forEach((r) => r.reload())}
       />
     );
   }
 
-  return <DashboardContent data={dash.data} reservationData={resv.data} />;
+  return <DashboardContent data={dash.data} reservationData={resv.data} books={books.data} loanData={loans.data} />;
 }

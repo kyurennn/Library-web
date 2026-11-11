@@ -12,6 +12,7 @@ import Profile from "./features/user/pages/profile";
 import Services from "./features/user/pages/services";
 import StaffDashboard from "./features/staff/pages/dashboard";
 import Reservations from "./features/staff/pages/reservations";
+import Loans from "./features/staff/pages/loans";
 import AdminLayout from "./layouts/AdminLayout";
 import BookManager from "./features/admin/pages/book-manager";
 import EditBook from "./features/admin/pages/edit-book";
@@ -19,14 +20,6 @@ import AdminHome from "./features/admin/pages/admin-home";
 import StaffManager from "./features/admin/pages/staff-manager";
 import RoomReservation from "./features/admin/pages/room-reservation";
 
-
-// Placeholder sementara untuk halaman yang belum dibuat
-const ComingSoon = ({ title }) => (
-  <div style={{ color: "#94a3b8" }}>
-    <h1 style={{ margin: "0 0 8px", color: "#f1f5f9" }}>{title}</h1>
-    <p>Halaman ini belum dibuat.</p>
-  </div>
-);
 
 export default function App() {
   return (
@@ -53,7 +46,7 @@ export default function App() {
             <Route path="/staff" element={<StaffLayout />}>
               <Route index element={<StaffDashboard />} />
               <Route path="reservations" element={<Reservations />} />
-              <Route path="loans" element={<ComingSoon title="Pinjaman Buku" />} />
+              <Route path="loans" element={<Loans />} />
             </Route>
           </Route>
 
