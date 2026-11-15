@@ -102,4 +102,9 @@ Athenaeum/
 
 ## Tim
 
-Kelompok **Let's Larp** — Solar, Rayka, Dapa, Rayhan, kyurennn.
+Kelompok **Let's Larp** 
+- 103022400141 - Muhammad Zaki
+- 103022400056 - Muhammad Daffa Arifin
+- 103022400063 - Muhammad Rasul
+- 103022400107 - M. Rayhan Ramadhan Afdhani
+- 103022400020 - Rayka Aqil Mumtaz
