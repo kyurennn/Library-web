@@ -55,6 +55,66 @@ Halaman login memiliki tiga peran. Gunakan akun berikut:
 
 > Akun ini hanya data contoh (mock) untuk keperluan demo/prototipe.
 
+## Alur Aplikasi
+ 
+```
+Buka aplikasi
+     │
+     ▼
+ /login  ── pilih peran (Member / Staff / Admin), isi username & kata sandi
+     │
+     ├─ akun atau peran tidak cocok ──► pesan kesalahan, tetap di /login
+     │
+     ▼ (cocok)
+ RequireRole memeriksa peran, lalu mengarahkan ke halaman awal peran:
+     │
+     ├─ Member ──► /        Beranda → Katalog → Detail Buku → Layanan & Fasilitas → Profil
+     ├─ Staff  ──► /staff   Dashboard → Reservasi Ruang → Pinjaman Buku
+     └─ Admin  ──► /admin   Book Manager → Dashboard → Reservasi Ruang → Staff Manajemen
+ 
+ Keluar (semua peran) ──► sesi dihapus, kembali ke /login
+```
+ 
+Aturan akses:
+- Belum login: semua rute dialihkan ke `/login`.
+- Salah peran (mis. Member membuka `/admin`): dialihkan ke halaman awal perannya sendiri.
+- Alamat yang tidak dikenal dialihkan ke `/`.
+- Centang **Ingat saya** menyimpan sesi di `localStorage`; tanpa itu sesi hanya di `sessionStorage` (hilang saat tab ditutup).
+## Penjelasan Halaman
+ 
+### Umum
+ 
+| Halaman | Rute | Penjelasan |
+| --- | --- | --- |
+| Login | `/login` | Memilih peran, mengisi username dan kata sandi, lalu masuk ke halaman awal sesuai peran. Opsi "Ingat saya" tersedia; tombol "Lupa kata sandi?" baru tampilan. |
+ 
+### Member (pengguna)
+ 
+| Halaman | Rute | Penjelasan |
+| --- | --- | --- |
+| Beranda | `/` | Koleksi buku, event dan berita perpustakaan. Kotak pencarian membawa pengguna ke katalog. |
+| Katalog | `/catalog` | Mencari buku berdasarkan kata kunci dan penulis, memfilter kategori, mengurutkan, beralih tampilan grid/daftar, dan pindah halaman. Dapat diisi lewat parameter URL dari halaman lain. |
+| Detail Buku | `/catalog/:id` | Informasi lengkap satu buku, dibuka dari kartu di katalog. |
+| Layanan & Fasilitas | `/services` | Memilih Ruangan Pribadi atau Ruangan Meeting dan slot jadwal yang tersedia, serta melihat Reservasi Saya dan ketentuan reservasi. Tombol "Ajukan Reservasi" belum mengirim data. |
+| Profil | `/profile` | Data akun, ubah data diri dan kata sandi, serta tombol Keluar. |
+ 
+### Staff
+ 
+| Halaman | Rute | Penjelasan |
+| --- | --- | --- |
+| Dashboard | `/staff` | Ringkasan pinjaman aktif, keterlambatan, reservasi menunggu, dan anggota aktif; grafik peminjaman 7 hari; Reservasi Menunggu Review; Jatuh Tempo Terdekat; Paling Sering Dipinjam (dihitung dari `loans.json` dan `books.json`, lengkap dengan sampul). |
+| Reservasi Ruang | `/staff/reservations` | Ringkasan status, jadwal ruangan hari ini, dan daftar permohonan yang dapat dicari dan difilter. Menekan baris membuka popup detail dengan tombol **Setujui** dan **Tolak**; persetujuan diperiksa terhadap bentrok ruangan, hari, dan sesi. |
+| Pinjaman Buku | `/staff/loans` | Daftar sirkulasi dengan filter (Semua, Dipinjam Normal, Jatuh Tempo Dekat, Terlambat) dan pencarian. Tombol **Tambah Pinjaman** membuka dialog dengan validasi (peminjam dan buku wajib dipilih, maksimal 3 pinjaman aktif per anggota, buku yang sama tidak boleh dipinjam dua kali oleh anggota yang sama, stok harus tersedia, tanggal tidak boleh melewati hari ini). Tombol **Dikembalikan** menandai buku kembali; denda Rp1.000 per hari terlambat dihitung otomatis. **Ekspor CSV** mengunduh daftar yang tampil. |
+ 
+### Admin
+ 
+| Halaman | Rute | Penjelasan |
+| --- | --- | --- |
+| Book Manager | `/admin`, `/admin/books` | Daftar koleksi dengan pencarian. **Tambah Buku** lewat modal, **Edit** membuka halaman edit, **Hapus** meminta konfirmasi dulu. |
+| Edit Buku | `/admin/books/edit/:id` | Mengubah judul, penulis, tahun, rak, kategori, dan status buku; judul wajib diisi. |
+| Dashboard | `/admin/dashboard` | Ringkasan operasional perpustakaan. |
+| Reservasi Ruang | `/admin/reservations` | Memantau jadwal dan jumlah reservasi per status. Hanya untuk dilihat; persetujuan dilakukan staf. |
+| Staff Manajemen | `/admin/staff` | Mengelola akun staf: tambah, edit, nonaktifkan, hapus, dan ekspor CSV, dengan validasi nama, email, ID, peran, shift, dan status. Admin terakhir yang aktif dan akun yang sedang dipakai tidak dapat dinonaktifkan. |
 ## Perintah Lain
 
 | Perintah | Fungsi |
@@ -103,8 +163,11 @@ Athenaeum/
 ## Tim
 
 Kelompok **Let's Larp** 
-- 103022400141 - Muhammad Zaki
-- 103022400056 - Muhammad Daffa Arifin
-- 103022400063 - Muhammad Rasul
-- 103022400107 - M. Rayhan Ramadhan Afdhani
-- 103022400020 - Rayka Aqil Mumtaz
+| NIM | Nama | GIT Username |
+| --- | --- | --- |
+| 103022400141 | Muhammad Zaki | Solar |
+| 103022400056 | Muhammad Daffa Arifin | kyurennn |
+| 103022400063 | Muhammad Rasul | Wild-Mane |
+| 103022400107 | M. Rayhan Ramadhan Afdhani | RayhanAfdhani |
+| 103022400020 | Rayka Aqil Mumtaz | RaykaAqil |
+
